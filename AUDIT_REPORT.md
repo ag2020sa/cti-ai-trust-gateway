@@ -1,5 +1,9 @@
 # Independent security and CTI assurance audit
 
+> **Historical pre-publication audit.** This report preserves the evidence and conclusions captured
+> before the first public prerelease. Statements about tag or publication state are point-in-time
+> records; see `RELEASE_READINESS.md` and `docs/releases/` for current release status.
+
 ## Audit status
 
 **Complete on 2026-07-17.** The baseline sections below are deliberately retained as reproduction

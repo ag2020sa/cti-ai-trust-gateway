@@ -5,8 +5,10 @@ source-evidence-first behavior.
 
 ## Development setup
 
-Python 3.12 and 3.13 are declared targets. Python 3.13 is locally verified for `0.1.0b1`; Python
-3.12 remains pending the first green CI run.
+Python 3.12 and 3.13 are declared targets. Pull requests to `main` must pass mandatory Python 3.12
+and 3.13 quality/test jobs, distribution verification, and the Docker build/live-health job in
+GitHub Actions. Python 3.13 is also verified locally; Python 3.12 and Docker are not installed on
+the audit host and are therefore not represented as locally verified.
 
 The public project home is
 [github.com/ag2020sa/cti-ai-trust-gateway](https://github.com/ag2020sa/cti-ai-trust-gateway).

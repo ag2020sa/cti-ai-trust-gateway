@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this research MVP, please cite the software and its release notes."
 title: "CTI AI Trust Gateway"
 type: software
-version: 0.1.0b1
+version: 0.1.0b2
 authors:
   - name: "CTI AI Trust Gateway contributors"
 abstract: "A research gateway for verifying AI-produced cyber threat intelligence against source evidence before operational export."

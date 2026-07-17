@@ -6,7 +6,7 @@
 
 > They generate intelligence. We verify it before it becomes operational.
 
-**Research MVP / Beta (`0.1.0b1`) — local evaluation only, not production ready.**
+**Research MVP / Beta (`0.1.0b2`) — local evaluation only, not production ready.**
 
 Repository: [github.com/ag2020sa/cti-ai-trust-gateway](https://github.com/ag2020sa/cti-ai-trust-gateway)
 
@@ -98,6 +98,23 @@ uv run uvicorn cti_trust_gateway.api.app:app --host 127.0.0.1 --port 8000
 ```
 
 Open <http://127.0.0.1:8000>. The UI is deliberately local/demo-only and has no authentication.
+
+## Install the verified GitHub release
+
+Download the wheel and checksum manifest from the `v0.1.0b2` GitHub prerelease, verify them, then
+install the wheel. No package has been published to PyPI.
+
+```bash
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/cti_ai_trust_gateway-0.1.0b2-py3-none-any.whl
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/cti_ai_trust_gateway-0.1.0b2.tar.gz
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/SHA256SUMS.txt
+sha256sum --check SHA256SUMS.txt
+python -m pip install ./cti_ai_trust_gateway-0.1.0b2-py3-none-any.whl
+cti-trust demo
+```
+
+The release page also provides the matching source distribution. Treat the checksums as an
+integrity check, not as a cryptographic publisher signature.
 
 ## Quick start with standard venv and pip
 

@@ -1,17 +1,19 @@
-# Release readiness: 0.1.0b1
+# Release record and corrective readiness: 0.1.0b2
 
-Prepared on 2026-07-17. This record covers the verified first public research MVP beta candidate.
-It records source publication preparation but no tag, package-index upload, or hosted release.
+Prepared on 2026-07-17. The annotated `v0.1.0b1` tag and public GitHub prerelease have been
+published with a source distribution, universal wheel, and SHA-256 checksum manifest. This record
+also defines the narrowly scoped corrective `v0.1.0b2` beta. Neither release was uploaded to a
+package index or container registry.
 
 ## Decision
 
-**READY FOR PUBLIC RESEARCH-BETA RELEASE**; **not production ready**.
+**READY FOR A CORRECTIVE PUBLIC RESEARCH-BETA RELEASE**; **not production ready**.
 
 The local source, package, schema-integrity, security, adversarial, API, CLI, and benchmark gates
-pass. Mandatory Python 3.12, Python 3.13, package, and Docker build/health jobs passed in GitHub
-Actions. The repository is public, and GitHub Private Vulnerability Reporting, secret scanning,
-and push protection are enabled. Tagging remains gated only on a green run for this final
-release-note update and artifact verification from that exact commit.
+pass. Mandatory Python 3.12, Python 3.13, package, and Docker build/health jobs are enforced in
+GitHub Actions. The repository is public, and GitHub Private Vulnerability Reporting, secret
+scanning, and push protection are enabled. Every corrective prerelease remains gated on a green
+final `main` run and artifact verification from that exact commit.
 
 ## Repository boundary and safety
 
@@ -19,9 +21,9 @@ release-note update and artifact verification from that exact commit.
 - Public-safe root name: `cti-ai-trust-gateway`. The user-specific absolute host prefix is
   intentionally excluded from this public document.
 - `.git` exists only at this root; its parent is not a Git worktree.
-- Branch: `main`; remote: `https://github.com/ag2020sa/cti-ai-trust-gateway`; tags: none.
-- The initial release commit and one cross-platform filename-validation fix were pushed to the
-  private staging repository. No tag or hosted release exists.
+- Branch: `main`; remote: `https://github.com/ag2020sa/cti-ai-trust-gateway`.
+- The immutable annotated `v0.1.0b1` tag and public GitHub prerelease exist. `v0.1.0b2` supersedes
+  it for new downloads without moving or replacing the historical tag or assets.
 
 ### Previous outside-root schema activity
 
@@ -62,7 +64,7 @@ outside-root modification remains.
 
 - Distribution: `cti-ai-trust-gateway`
 - Import package: `cti_trust_gateway`
-- Version: `0.1.0b1` in `pyproject.toml`, `cti_trust_gateway.__version__`, FastAPI metadata, health
+- Current version: `0.1.0b2` in `pyproject.toml`, `cti_trust_gateway.__version__`, FastAPI metadata, health
   response, tests, Docker image label in CI, changelog, citation metadata, and release notes.
 - Python requirement: `>=3.12,<3.14`, with classifiers for 3.12 and 3.13.
 - Console entry point: `cti-trust = cti_trust_gateway.cli.main:app`.
@@ -70,10 +72,10 @@ outside-root modification remains.
   attribution.
 - Repository URL: `https://github.com/ag2020sa/cti-ai-trust-gateway`.
 
-## Clean distribution and installed-wheel evidence
+## Historical `v0.1.0b1` distribution and installed-wheel evidence
 
-The previous `dist/` directory was verified as an exact child of the repository and removed before
-building. The clean build produced exactly:
+Before `v0.1.0b1` publication, the previous `dist/` directory was verified as an exact child of the
+repository and removed. That clean historical build produced exactly:
 
 - `dist/cti_ai_trust_gateway-0.1.0b1.tar.gz`
 - `dist/cti_ai_trust_gateway-0.1.0b1-py3-none-any.whl`
@@ -123,7 +125,7 @@ operating-system temporary directory. Evidence:
 | Twine metadata/readme check | PASS, both artifacts |
 | Fresh installed-wheel verification | PASS on Python 3.13.5 |
 | `pip-audit --local` | PASS, no known dependency vulnerabilities; local unpublished project skipped |
-| Actual API health endpoint | PASS, HTTP 200 with `0.1.0b1` |
+| Historical `v0.1.0b1` API health endpoint | PASS, HTTP 200 with `0.1.0b1` |
 | API upload/analyze/review/export integration | PASS |
 
 The adversarial directory passed once on its own and again inside the full suite. Tests use isolated
@@ -175,11 +177,10 @@ full-length SHA-pinned official checkout/setup actions, no allowed failures, and
 mypy, Bandit, dependency-audit, coverage, and packaging gates. Dependabot covers pip, GitHub Actions,
 and Docker updates.
 
-GitHub Actions run
-[`29549619993`](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29549619993)
-passed on commit `147d4e8292dda54a5bdf5247709e36588937f757`: Python 3.12 and 3.13 quality/tests,
-clean package build and outside-checkout installation, and Docker build/health all succeeded. The
-final release-note update must also pass the complete workflow before a tag is created.
+The mandatory [GitHub Actions workflow](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/workflows/ci.yml)
+has exact jobs for Python 3.12 and 3.13 quality/tests, clean package build and outside-checkout
+installation, and Docker build/health. Checked-in documentation uses the stable workflow URL;
+hosted release notes record the exact final run for each prerelease.
 
 ## Public documentation and community files
 
@@ -190,29 +191,29 @@ this readiness record. The README states research-beta status, threat/assurance 
 install/run/API/CLI/demo steps, schema provenance, bilingual behavior, benchmark/data licensing,
 known limitations, screenshots, security warnings, and roadmap.
 
-## Remaining release gates before tagging
+## Corrective release controls
 
-1. Observe the complete workflow green on this final release-note update.
+1. Observe the complete workflow green on the final `main` commit.
 2. Rebuild release artifacts on that exact commit and repeat the installed-wheel and archive scans.
-3. Create and verify the annotated tag and GitHub prerelease with checksums.
+3. Create and verify a new annotated tag and GitHub prerelease with checksums.
 
-Only after items 1–3 pass should an annotated `v0.1.0b1` tag and hosted prerelease be created.
-Package upload, if ever desired, is a separate explicitly authorized action.
+The historical `v0.1.0b1` tag and assets remain immutable. Package-index or container-registry
+publication, if ever desired, is a separate explicitly authorized action.
 
-## Exact remaining publication sequence
+## Publication sequence
 
 ```text
-1. Commit and push this final release-note update.
-2. Observe all mandatory jobs green on that exact commit.
-3. Rebuild and verify release artifacts from the green commit.
-4. Create the annotated `v0.1.0b1` tag and GitHub prerelease with checksums.
+1. Merge the reviewed corrective pull request through the protected `main` branch.
+2. Observe all mandatory jobs green on the exact final `main` commit.
+3. Rebuild and verify release artifacts from that green commit.
+4. Create a new annotated tag and GitHub prerelease with checksums.
 5. Verify the public repository, tag, release assets, links, and reporting channel.
-6. Do not upload to a package index without separate explicit authorization.
+6. Do not upload to a package index or container registry without separate explicit authorization.
 ```
 
 ## Final statement
 
-The tree is a coherent, installable, locally and remotely verified research beta candidate and is
-**READY FOR PUBLIC RESEARCH-BETA RELEASE**. It is not production ready. The remaining procedural
-gates are a green final release-note CI run and final artifact verification before the annotated
-tag and GitHub prerelease are created.
+The tree is a coherent, installable, locally and remotely verified research beta and is **READY FOR
+A CORRECTIVE PUBLIC RESEARCH-BETA RELEASE** after the controls above pass. It is not production
+ready. `v0.1.0b2` changes attribution, documentation, version metadata, and repository governance;
+it does not change core gateway functionality.
