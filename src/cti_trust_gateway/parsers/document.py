@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 from uuid import uuid4
 
@@ -36,10 +36,11 @@ def detect_language(text: str) -> str:
 
 
 def _safe_name(name: str) -> str:
-    candidate = Path(name).name
-    if candidate != name or not candidate or candidate in {".", ".."}:
+    posix_name = PurePosixPath(name).name
+    windows_name = PureWindowsPath(name).name
+    if posix_name != name or windows_name != name or not name or name in {".", ".."}:
         raise DocumentError("Invalid filename")
-    return candidate
+    return name
 
 
 def parse_document(

@@ -227,7 +227,7 @@ finding-category mismatch.
 ## Verification status
 
 The release candidate currently has 122 local tests (including 87 tests under the independent
-adversarial directory), 87.81% branch-aware coverage from the release-candidate run, a
+adversarial directory), 87.82% branch-aware coverage from the release-candidate run, a
 100-mutation benchmark with zero mismatches, and passing Ruff, mypy, and Bandit checks on Python
 3.13. The exact release-candidate totals are reproduced in `RELEASE_READINESS.md`. Python 3.12 and
 Docker runtime results must remain pending until the first mandatory CI run succeeds.

@@ -115,7 +115,7 @@ operating-system temporary directory. Evidence:
 | strict mypy | PASS, 28 source files |
 | Bandit | PASS |
 | Full pytest | PASS, 122 tests |
-| Branch-aware coverage | PASS, 87.81% against 80% minimum |
+| Branch-aware coverage | PASS, 87.82% against 80% minimum |
 | Independent adversarial directory | PASS, 87 tests |
 | Synthetic benchmark | PASS, 100 mutations, zero mismatches |
 | Distribution build | PASS, sdist and wheel |
