@@ -1,0 +1,19 @@
+name: abstain-demo
+description: Demonstrates explicit abstention for relationships without semantic proof.
+rules:
+  - id: quarantine-critical-document-content
+    when: {category: document_security, severity: critical}
+    verdict: QUARANTINE
+    reason: Critical instruction-like content requires quarantine.
+  - id: reject-invalid-stix
+    when: {category: stix_structure, severity: high}
+    verdict: REJECT
+    reason: Invalid STIX cannot enter trusted systems.
+  - id: reject-corrupted-ioc
+    when: {rule_id: EVIDENCE-IOC-002}
+    verdict: REJECT
+    reason: Observable corruption is deterministic.
+  - id: abstain-relationship
+    when: {rule_id: EVIDENCE-REL-001}
+    verdict: ABSTAIN
+    reason: No semantic verifier is configured, so relationship support is unknown.

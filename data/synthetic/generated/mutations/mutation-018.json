@@ -1,0 +1,28 @@
+{
+  "type": "bundle",
+  "id": "bundle--062fc99a-5367-4d34-8514-591b312e5bce",
+  "objects": [
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--da82f3ab-6199-46f3-8c50-e4b688157dcf",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CedarFox",
+      "aliases": [
+        "SharedAlias"
+      ]
+    },
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--7ce0d33e-a622-473c-a2d9-51b900d7c03d",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "PineFox",
+      "aliases": [
+        "SharedAlias"
+      ]
+    }
+  ]
+}

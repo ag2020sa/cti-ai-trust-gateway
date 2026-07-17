@@ -1,0 +1,20 @@
+{
+  "type": "bundle",
+  "id": "bundle--feeeff35-3f76-4020-9de2-7d6b494d3926",
+  "objects": [
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--bbc3bb0f-7172-4248-b23d-981214dd7f24",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "T1059",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1059"
+        }
+      ]
+    }
+  ]
+}

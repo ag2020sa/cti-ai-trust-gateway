@@ -1,0 +1,17 @@
+{
+  "type": "bundle",
+  "id": "bundle--1ec65ce0-a7a2-4dbf-9d4b-8eb755bea313",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8f93b721-14d7-46a3-a71a-8e9f4a5dd14a",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "Reserved test URL",
+      "pattern_type": "stix",
+      "pattern": "[url:value = 'https://malicious.example.invalid/dropper']",
+      "valid_from": "2026-07-17T00:00:00Z"
+    }
+  ]
+}

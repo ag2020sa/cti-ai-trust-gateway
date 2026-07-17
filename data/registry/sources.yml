@@ -1,0 +1,22 @@
+sources:
+  - name: MITRE ATT&CK STIX
+    url: https://github.com/mitre-attack/attack-stix-data
+    use: identifiers and optional evaluation metadata
+  - name: OASIS STIX examples
+    url: https://github.com/oasis-open/cti-stix2-json-schemas
+    use: schema and example reference
+  - name: CISA Advisories
+    url: https://www.cisa.gov/news-events/cybersecurity-advisories
+    use: links and metadata only
+  - name: CISA KEV
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    use: links and metadata only
+  - name: NVD
+    url: https://nvd.nist.gov/developers/vulnerabilities
+    use: links and metadata only
+  - name: Saudi CERT
+    url: https://nca.gov.sa/en/cert/
+    use: links and metadata only; no report redistribution
+  - name: CTIBench
+    url: https://github.com/maveryn/cti-bench
+    use: optional separate evaluation; never vendored (CC BY-NC-SA)

@@ -1,0 +1,10 @@
+{
+  "snapshot": "2026-07-17",
+  "attribution": "© 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation.",
+  "techniques": [
+    {"external_id": "T1059.001", "name": "PowerShell", "deprecated": false},
+    {"external_id": "T1190", "name": "Exploit Public-Facing Application", "deprecated": false},
+    {"external_id": "T1566.001", "name": "Spearphishing Attachment", "deprecated": false},
+    {"external_id": "T1064", "name": "Scripting", "deprecated": true}
+  ]
+}

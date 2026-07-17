@@ -1,0 +1,1 @@
+الجهة المسؤولة غير معروفة. لوحظ النطاق cedar-example.org. CVE-2026-6006 may be exploitable; confidence is limited.

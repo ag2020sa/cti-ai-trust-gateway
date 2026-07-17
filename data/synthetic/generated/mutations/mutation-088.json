@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--90d5fb58-77cb-453f-bafb-6a83d6b75330",
+  "objects": [
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--90d5fb58-77cb-453f-bafb-6a83d6b75330",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CVE-26-XYZ"
+    }
+  ]
+}

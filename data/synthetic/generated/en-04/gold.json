@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--9b5cda89-d902-4b60-8499-7fd5c7ca4bfa",
+  "objects": [
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--b92c84c9-94a3-4473-b2ee-84aac97dd02b",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CVE-2026-2002"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Possible exploitation of CVE-2026-2002 was observed from 203.0.113.44. The behavior maps to ATT&CK T1059.001.

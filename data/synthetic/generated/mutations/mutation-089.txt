@@ -1,0 +1,1 @@
+Map to T1105. تم الاتصال بالنطاق pine-example.com. CVE-2026-6006 may be exploitable; confidence is limited.

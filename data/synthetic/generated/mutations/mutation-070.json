@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--42d065fa-f5b4-4505-aa25-1ac91bf2a444",
+  "objects": [
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--5c425f8e-6032-48dc-b07f-0a433b2b201f",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CVE-2026-1001"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "bundle",
+  "id": "bundle--7fcd0adc-6341-4142-9ffb-f4549c681db6",
+  "objects": [
+    {
+      "type": "ipv4-addr",
+      "spec_version": "2.1",
+      "id": "ipv4-addr--7fcd0adc-6341-4142-9ffb-f4549c681db6",
+      "value": "198.51.100.29"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--f26dd4c9-18ab-4ed3-8ba2-96e0cf3da2c9",
+  "objects": [
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--f26dd4c9-18ab-4ed3-8ba2-96e0cf3da2c9",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "UnsupportedActor83"
+    }
+  ]
+}

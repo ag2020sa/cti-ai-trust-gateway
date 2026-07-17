@@ -1,0 +1,2 @@
+Northstar observed the reserved test URL https://malicious.example.invalid/dropper.
+The report does not identify a responsible actor.

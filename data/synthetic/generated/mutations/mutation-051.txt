@@ -1,0 +1,1 @@
+The actor is unknown. Beacon traffic reached frost-example.net. The behavior maps to ATT&CK T1059.001.

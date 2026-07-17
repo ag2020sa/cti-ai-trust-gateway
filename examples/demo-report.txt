@@ -1,0 +1,2 @@
+Exploitation of CVE-2026-1234 is possible. The responsible actor is unknown.
+Observed malicious IP: 203.0.113.53. Confidence is limited.

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CTI AI Trust Gateway</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header><div><strong>CTI AI Trust Gateway</strong><span>Evidence before operations</span></div></header>
+  <main>
+    <aside class="warning">Local/demo only — this MVP has no authentication. Do not expose it to untrusted networks.</aside>
+    <section class="card">
+      <h1>Verify a candidate bundle</h1>
+      <form id="upload-form">
+        <label>Original CTI document (.txt, .md, .pdf)<input name="source" type="file" accept=".txt,.md,.pdf" required></label>
+        <label>Candidate STIX 2.1 bundle<input name="candidate" type="file" accept=".json,application/json" required></label>
+        <label>TLP marking<input name="tlp" placeholder="TLP:CLEAR"></label>
+        <button type="submit">Analyze safely</button>
+        <output id="upload-status"></output>
+      </form>
+    </section>
+    <section>
+      <h2>Cases</h2>
+      <div class="case-grid">
+      {% for case in cases %}
+        <a class="card case" href="/cases/{{ case.id }}">
+          <span class="badge {{ case.verdict.value|lower }}">{{ case.verdict.value }}</span>
+          <strong>{{ case.source.filename }}</strong>
+          <small>{{ case.created_at }} · {{ '%.0f'|format(case.evidence_coverage * 100) }}% evidence</small>
+        </a>
+      {% else %}
+        <p>No cases yet. Run the bundled demo or upload a source and candidate.</p>
+      {% endfor %}
+      </div>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

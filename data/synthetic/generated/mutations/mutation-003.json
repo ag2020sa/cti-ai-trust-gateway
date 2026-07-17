@@ -1,0 +1,20 @@
+{
+  "type": "bundle",
+  "id": "bundle--0cc2424e-ccf0-4c0d-af13-f43165c90cf3",
+  "objects": [
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--0cc2424e-ccf0-4c0d-af13-f43165c90cf3",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "Wrong technique",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1059.009"
+        }
+      ]
+    }
+  ]
+}

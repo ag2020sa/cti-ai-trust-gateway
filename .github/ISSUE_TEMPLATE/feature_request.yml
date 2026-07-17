@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a scoped research-MVP improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include sensitive CTI or production integration credentials.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What assurance or usability problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Describe expected behavior and fail-closed implications.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Verification approach
+      description: What deterministic, adversarial, or integration tests would prove the change?
+    validations:
+      required: true

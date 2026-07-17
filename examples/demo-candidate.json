@@ -1,0 +1,39 @@
+{
+  "type": "bundle",
+  "id": "bundle--33a14e6d-4333-4b48-a54d-9023378594b8",
+  "objects": [
+    {
+      "type": "ipv4-addr",
+      "spec_version": "2.1",
+      "id": "ipv4-addr--b1b0e74b-0e47-4b73-bcdf-46137f9b559d",
+      "value": "203.0.113.58"
+    },
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--2dc47feb-847f-4e4c-a6fe-c227468124f8",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "APT28",
+      "confidence": 95
+    },
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--54ef952b-4427-4fea-af03-9c6d62e51ef2",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CVE-2026-1234"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--4f8af23b-61d6-4f84-88cb-440753c61e84",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "relationship_type": "exploits",
+      "source_ref": "intrusion-set--2dc47feb-847f-4e4c-a6fe-c227468124f8",
+      "target_ref": "vulnerability--54ef952b-4427-4fea-af03-9c6d62e51ef2"
+    }
+  ]
+}

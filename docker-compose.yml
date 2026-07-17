@@ -1,0 +1,16 @@
+services:
+  gateway:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - gateway-data:/app/data/runtime
+    environment:
+      CTI_GATEWAY_DATABASE_URL: sqlite:////app/data/runtime/gateway.db
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  gateway-data:

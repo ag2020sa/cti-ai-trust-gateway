@@ -1,0 +1,1 @@
+Map to T1105. تم الاتصال بالنطاق pine-example.com. The behavior maps to ATT&CK T1059.001.

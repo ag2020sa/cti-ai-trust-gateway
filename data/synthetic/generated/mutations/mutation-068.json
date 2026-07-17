@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--bd5461c2-58a6-4c1f-9f04-18a1b8804475",
+  "objects": [
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--bd5461c2-58a6-4c1f-9f04-18a1b8804475",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "APT28"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this research MVP, please cite the software and its release notes."
+title: "CTI AI Trust Gateway"
+type: software
+version: 0.1.0b1
+authors:
+  - name: "CTI AI Trust Gateway contributors"
+abstract: "A research gateway for verifying AI-produced cyber threat intelligence against source evidence before operational export."
+license: Apache-2.0
+repository-code: "https://github.com/ag2020sa/cti-ai-trust-gateway"
+url: "https://github.com/ag2020sa/cti-ai-trust-gateway"
+keywords:
+  - cyber threat intelligence
+  - STIX
+  - AI assurance
+  - evidence verification

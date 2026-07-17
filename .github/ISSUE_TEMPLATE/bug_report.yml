@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible non-security defect using synthetic data.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not submit vulnerabilities, credentials, real CTI, or sensitive reports here. Use the private process in SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 0.1.0b1
+    validations:
+      required: true
+  - type: dropdown
+    id: python
+    attributes:
+      label: Python version
+      options: ["3.12", "3.13", "Other / unknown"]
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain the observed and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Include minimal commands and synthetic input only.
+      render: shell
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed secrets, personal data, and real threat-intelligence content.
+          required: true
+        - label: This is not a security vulnerability report.
+          required: true

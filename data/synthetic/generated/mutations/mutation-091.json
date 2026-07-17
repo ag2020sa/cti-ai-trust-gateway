@@ -1,0 +1,16 @@
+{
+  "type": "bundle",
+  "id": "bundle--3c1334ad-9311-42f0-8c6c-2b60b938b863",
+  "objects": [
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--3c1334ad-9311-42f0-8c6c-2b60b938b863",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "relationship_type": "uses",
+      "source_ref": "intrusion-set--15ba9dd1-fd23-41b8-9166-9e214a16e8af",
+      "target_ref": "malware--53396a24-1ad1-4114-b9ef-269dd0b79bbc"
+    }
+  ]
+}

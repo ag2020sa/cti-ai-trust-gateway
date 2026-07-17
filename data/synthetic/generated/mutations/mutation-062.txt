@@ -1,0 +1,1 @@
+GlassRAT executed PowerShell mapped to ATT&CK T1059.001. CedarFox and GlassRAT are listed separately in an appendix.

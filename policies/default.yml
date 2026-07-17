@@ -1,0 +1,87 @@
+name: default
+description: Conservative local-first policy for untrusted AI-produced CTI.
+rules:
+  - id: abstain-validator-unavailable
+    when: {rule_id: STIX-VALIDATION-UNAVAILABLE}
+    verdict: ABSTAIN
+    reason: Mandatory STIX schema validation was unavailable; PASS is prohibited.
+  - id: abstain-validator-error
+    when: {rule_id: STIX-VALIDATION-ERROR}
+    verdict: ABSTAIN
+    reason: Mandatory STIX schema validation errored; PASS is prohibited.
+  - id: abstain-validator-skipped
+    when: {rule_id: STIX-VALIDATION-SKIPPED}
+    verdict: ABSTAIN
+    reason: Mandatory STIX schema validation was skipped; PASS is prohibited.
+  - id: quarantine-critical-document-content
+    when: {category: document_security, severity: critical}
+    verdict: QUARANTINE
+    reason: Critical hidden or visible instruction-like content requires quarantine.
+  - id: quarantine-high-document-content
+    when: {category: document_security, severity: high}
+    verdict: QUARANTINE
+    reason: High-risk hidden content, role redefinition, or control characters require quarantine.
+  - id: reject-invalid-stix
+    when: {category: stix_structure, severity: high}
+    verdict: REJECT
+    reason: Invalid STIX cannot enter trusted systems.
+  - id: reject-corrupted-ioc
+    when: {rule_id: EVIDENCE-IOC-002}
+    verdict: REJECT
+    reason: An observable differs from the exact value in the source.
+  - id: reject-invalid-identifier-format
+    when: {rule_id: OBSERVABLE-FORMAT-001}
+    verdict: REJECT
+    reason: A CVE or ATT&CK identifier is malformed.
+  - id: reject-attack-name-mismatch
+    when: {rule_id: ATTACK-NAME-001}
+    verdict: REJECT
+    reason: The ATT&CK technique name does not match its identifier.
+  - id: review-unverified-attack-reference
+    when: {category: attack_mapping, severity: medium}
+    verdict: REVIEW
+    reason: The ATT&CK reference could not be fully verified from the pinned subset.
+  - id: reject-semantic-contradiction
+    when: {rule_id: SEMANTIC-CONTRADICTED}
+    verdict: REJECT
+    reason: The source contradicts the candidate claim.
+  - id: reject-unknown-actor-relationship
+    when: {rule_id: EVIDENCE-REL-CONTRADICTED}
+    verdict: REJECT
+    reason: A named actor relationship contradicts an explicit unknown-actor statement.
+  - id: review-unsupported-entity
+    when: {category: entity_grounding, severity: medium}
+    verdict: REVIEW
+    reason: An entity claim needs analyst grounding.
+  - id: review-missing-relationship-evidence
+    when: {rule_id: EVIDENCE-REL-001}
+    verdict: REVIEW
+    reason: Co-occurrence does not prove a relationship.
+  - id: review-partial-evidence
+    when: {rule_id: SEMANTIC-PARTIAL}
+    verdict: REVIEW
+    reason: Partial semantic evidence needs analyst review.
+  - id: abstain-unknown-semantic-status
+    when: {rule_id: SEMANTIC-UNKNOWN}
+    verdict: ABSTAIN
+    reason: No semantic verifier was configured.
+  - id: abstain-semantic-provider-error
+    when: {rule_id: SEMANTIC-ERROR}
+    verdict: ABSTAIN
+    reason: The semantic verifier failed, so relationship support is unknown.
+  - id: reject-tlp-violation
+    when: {rule_id: POLICY-TLP-001}
+    verdict: REJECT
+    reason: Requested handling violates the supplied TLP marking.
+  - id: review-high-confidence
+    when: {rule_id: CONFIDENCE-001}
+    verdict: REVIEW
+    reason: High model confidence must be calibrated against evidence.
+  - id: review-bilingual-inconsistency
+    when: {category: bilingual_consistency, severity: medium}
+    verdict: REVIEW
+    reason: Arabic and English attribution statements need reconciliation.
+  - id: reject-unsupported-claim
+    when: {rule_id: EVIDENCE-NOTFOUND-001, severity: high}
+    verdict: REJECT
+    reason: A deterministic candidate value has no evidence in the source.

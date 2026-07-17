@@ -1,0 +1,14 @@
+{
+  "type": "bundle",
+  "id": "bundle--e6780750-c9e6-4e54-aeee-5cedc0708348",
+  "objects": [
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--e6780750-c9e6-4e54-aeee-5cedc0708348",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "InventedActor13"
+    }
+  ]
+}

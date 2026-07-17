@@ -1,0 +1,33 @@
+{
+  "type": "bundle",
+  "id": "bundle--b8383b3f-f020-4498-98a1-9731d60aa3cd",
+  "objects": [
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--c06084fb-17b2-4f30-8bc1-9ebaec8ed159",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CedarFox"
+    },
+    {
+      "type": "malware",
+      "spec_version": "2.1",
+      "id": "malware--ca5a7ec9-5f8b-4f78-a99b-477ffed33eee",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "GlassRAT",
+      "is_family": false
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--b8383b3f-f020-4498-98a1-9731d60aa3cd",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "relationship_type": "uses",
+      "source_ref": "intrusion-set--c06084fb-17b2-4f30-8bc1-9ebaec8ed159",
+      "target_ref": "malware--ca5a7ec9-5f8b-4f78-a99b-477ffed33eee"
+    }
+  ]
+}

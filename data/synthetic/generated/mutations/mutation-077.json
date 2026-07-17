@@ -1,0 +1,15 @@
+{
+  "type": "bundle",
+  "id": "bundle--65ae64b9-8f1e-42d2-9a63-95e6d3c8df1c",
+  "objects": [
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--65ae64b9-8f1e-42d2-9a63-95e6d3c8df1c",
+      "created": "2026-07-17T00:00:00Z",
+      "modified": "2026-07-17T00:00:00Z",
+      "name": "CVE-2026-6006",
+      "confidence": 95
+    }
+  ]
+}

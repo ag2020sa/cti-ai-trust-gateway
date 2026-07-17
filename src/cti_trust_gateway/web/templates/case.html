@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="{{ case.source.language }}" {% if case.source.language == 'ar' %}dir="rtl"{% endif %}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ case.id }} · CTI AI Trust Gateway</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-case-id="{{ case.id }}">
+  <header><a href="/">← Cases</a><span class="badge {{ case.verdict.value|lower }}">{{ case.verdict.value }}</span></header>
+  <main>
+    <aside class="warning">Local/demo only — no authentication. Verdicts are scoped to the supplied source.</aside>
+    <section class="summary card">
+      <div><small>Source</small><strong>{{ case.source.filename }}</strong></div>
+      <div><small>SHA-256</small><code>{{ case.source.sha256 }}</code></div>
+      <div><small>Language</small><strong>{{ case.source.language }}</strong></div>
+      <div><small>Evidence coverage</small><strong>{{ '%.0f'|format(case.evidence_coverage * 100) }}%</strong></div>
+    </section>
+    <nav class="actions">
+      <a class="button" href="/api/v1/cases/{{ case.id }}/manifest">Evidence manifest</a>
+      {% if export_available %}
+      <a class="button" href="/api/v1/cases/{{ case.id }}/export/stix">Export approved STIX</a>
+      {% else %}
+      <button class="button disabled" type="button" disabled aria-describedby="export-status">Export approved STIX</button>
+      {% endif %}
+    </nav>
+    {% if not export_available %}
+    <p id="export-status" class="export-status" role="status" dir="auto">
+      {% if export_blocked_by_policy %}<strong>Export blocked by policy.</strong>{% endif %}
+      No source-verified STIX objects are available for export.
+    </p>
+    {% endif %}
+    <div class="split">
+      <section class="card">
+        <h2>Original document</h2>
+        <pre class="source" {% if case.source.language in ['ar', 'mixed'] %}dir="auto"{% endif %}>{{ case.source.text }}</pre>
+      </section>
+      <section class="card">
+        <h2>Candidate claims</h2>
+        {% for claim in case.claims %}
+        <article class="claim">
+          <span class="badge {{ claim.status|lower }}">{{ claim.status }}</span>
+          <p>{{ claim.statement }}</p>
+          {% for span in claim.evidence %}
+          <blockquote dir="auto">Page {{ span.page or 'n/a' }}, offsets {{ span.start }}–{{ span.end }} · {{ span.match_type }}<br>{{ span.text }}</blockquote>
+          {% endfor %}
+        </article>
+        {% endfor %}
+      </section>
+    </div>
+    <section>
+      <h2>Findings</h2>
+      {% for finding in case.findings|sort(attribute='severity.value', reverse=true) %}
+      <article class="card finding {{ finding.severity.value }}">
+        <div><span class="severity">{{ finding.severity.value }}</span> <small>{{ finding.category.value }} · {{ finding.rule_id }}</small></div>
+        <h3>{{ finding.title }}</h3><p>{{ finding.explanation }}</p>
+        {% if finding.evidence %}<blockquote dir="auto">{{ finding.evidence }}</blockquote>{% endif %}
+        <p><strong>Action:</strong> {{ finding.recommended_action }}</p>
+        <div class="review-actions" data-finding-id="{{ finding.id }}" {% if finding.object_ids %}data-object-id="{{ finding.object_ids[0] }}"{% endif %}>
+          <input aria-label="Analyst comment" placeholder="Analyst comment">
+          {% if finding.object_ids and case.verdict.value not in ['REJECT', 'QUARANTINE'] and finding.severity.value not in ['high', 'critical'] %}
+          <button data-action="accept">Accept</button>
+          {% endif %}
+          <button class="danger" data-action="reject">Reject</button>
+        </div>
+      </article>
+      {% else %}<p>No findings.</p>{% endfor %}
+    </section>
+    <section class="card">
+      <h2>Policy explanation</h2>
+      <ul>{% for reason in case.policy.reasons %}<li>{{ reason }}</li>{% endfor %}</ul>
+      <h2>Audit history</h2>
+      <ol>{% for event in case.audit %}<li><code>{{ event.timestamp }}</code> {{ event.event_type }} by {{ event.actor }} · <code>{{ event.event_hash[:12] }}</code></li>{% endfor %}</ol>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
