@@ -44,7 +44,7 @@ def _bundle(value: str, *, valid_id: bool = True) -> bytes:
 
 
 def main() -> None:
-    assert __version__ == "0.1.0b1"
+    assert __version__ == "0.1.0b2"
     assert "site-packages" in Path(cti_trust_gateway.__file__).resolve().parts
     assert bundled_policy_path().is_file()
     schema_files = list(BUNDLED_SCHEMA_DIR.rglob("*.json"))

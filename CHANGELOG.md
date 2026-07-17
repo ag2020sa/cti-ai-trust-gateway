@@ -8,6 +8,24 @@ version semantics.
 
 No unreleased changes.
 
+## [0.1.0b2] - 2026-07-17
+
+### Changed
+
+- Corrected Apache-2.0 license attribution to the project contributors.
+- Reconciled release-readiness and historical documentation with the published `v0.1.0b1`
+  prerelease, and added corrective `v0.1.0b2` release notes and verified-release install guidance.
+- Updated package, API, citation, test, and CI container metadata to `0.1.0b2`.
+
+### Security
+
+- Disabled blank public issues and added private vulnerability-reporting guidance that prohibits
+  sensitive CTI in public issues.
+- Hardened `main` governance with pull requests, conversation resolution, up-to-date branches, four
+  mandatory CI checks, and deletion/force-push protection.
+
+There is no core gateway behavior change in this corrective beta.
+
 ## [0.1.0b1] - 2026-07-17
 
 ### Added

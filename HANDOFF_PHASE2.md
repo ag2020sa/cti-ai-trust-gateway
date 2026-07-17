@@ -1,5 +1,9 @@
 # Phase 2 independent audit handoff
 
+> **Historical pre-publication handoff.** Publication and tag statements below describe the state
+> when this handoff was written. The public `v0.1.0b1` prerelease was subsequently published and is
+> superseded for new downloads by the corrective `v0.1.0b2` prerelease.
+
 ## Outcome
 
 **GO for a public GitHub research-beta source release; NO-GO for production deployment.** The three

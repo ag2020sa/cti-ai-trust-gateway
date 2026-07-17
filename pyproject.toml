@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cti-ai-trust-gateway"
-version = "0.1.0b1"
+version = "0.1.0b2"
 description = "Vendor-neutral verification gateway for AI-generated cyber threat intelligence: evidence grounding, STIX 2.1 validation, policy enforcement, and human review"
 readme = "README.md"
 license = {file = "LICENSE"}

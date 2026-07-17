@@ -4,7 +4,8 @@
 
 | Version | Support status |
 |---|---|
-| `0.1.0b1` | Research-beta security reports accepted on a best-effort basis |
+| `0.1.0b2` | Research-beta security reports accepted on a best-effort basis |
+| `0.1.0b1` | Superseded by `0.1.0b2`; use the corrective release for new downloads |
 | Earlier snapshots | Unsupported |
 
 This project is a research MVP and is **not approved for production deployment or public network
@@ -18,8 +19,8 @@ customer data, private indicators, or exploit material to an issue.
 
 Use GitHub Private Vulnerability Reporting through the repository's
 [Security → Report a vulnerability](https://github.com/ag2020sa/cti-ai-trust-gateway/security/advisories/new)
-page. This channel must be enabled and verified before the beta tag is created. Do not use the
-conduct-reporting address for vulnerabilities.
+page. This private reporting channel is enabled for the public repository. Do not use the
+conduct-reporting address for vulnerabilities and do not include sensitive CTI in public issues.
 
 Include only a minimal synthetic reproduction, affected version, impact, and suggested mitigation.
 The maintainers will acknowledge reports when available, but this beta carries no response-time or

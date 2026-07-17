@@ -70,14 +70,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - run: docker build --tag cti-ai-trust-gateway:0.1.0b1 .
+      - run: docker build --tag cti-ai-trust-gateway:0.1.0b2 .
       - name: Start container and verify health endpoint
         shell: bash
         run: |
           container="$(docker run --detach --name cti-gateway-ci \
             --publish 127.0.0.1:18000:8000 \
             --env CTI_GATEWAY_ENABLE_EXTERNAL_LLM=false \
-            cti-ai-trust-gateway:0.1.0b1)"
+            cti-ai-trust-gateway:0.1.0b2)"
           cleanup() { docker rm --force "$container" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
           for attempt in $(seq 1 30); do
