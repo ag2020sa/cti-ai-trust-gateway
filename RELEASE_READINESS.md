@@ -9,8 +9,9 @@ It records source publication preparation but no tag, package-index upload, or h
 
 The local source, package, schema-integrity, security, adversarial, API, CLI, and benchmark gates
 pass. Mandatory Python 3.12, Python 3.13, package, and Docker build/health jobs passed in GitHub
-Actions. Tagging remains gated on a green run for the final documentation commit and verified
-GitHub Private Vulnerability Reporting.
+Actions. The repository is public, and GitHub Private Vulnerability Reporting, secret scanning,
+and push protection are enabled. Tagging remains gated only on a green run for this final
+release-note update and artifact verification from that exact commit.
 
 ## Repository boundary and safety
 
@@ -175,10 +176,10 @@ mypy, Bandit, dependency-audit, coverage, and packaging gates. Dependabot covers
 and Docker updates.
 
 GitHub Actions run
-[`29549259384`](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29549259384)
-passed on commit `770814e0683400120afa3443596d00a4f546e432`: Python 3.12 and 3.13 quality/tests,
+[`29549619993`](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29549619993)
+passed on commit `147d4e8292dda54a5bdf5247709e36588937f757`: Python 3.12 and 3.13 quality/tests,
 clean package build and outside-checkout installation, and Docker build/health all succeeded. The
-final documentation commit must also pass the complete workflow before a tag is created.
+final release-note update must also pass the complete workflow before a tag is created.
 
 ## Public documentation and community files
 
@@ -191,10 +192,9 @@ known limitations, screenshots, security warnings, and roadmap.
 
 ## Remaining release gates before tagging
 
-1. Observe the complete workflow green on the final documentation commit.
-2. Re-run the secret scan on that exact commit and review the final file inventory.
-3. Make the repository public, enable and verify GitHub Private Vulnerability Reporting, and keep
-   `SECURITY.md` aligned with the observed setting.
+1. Observe the complete workflow green on this final release-note update.
+2. Rebuild release artifacts on that exact commit and repeat the installed-wheel and archive scans.
+3. Create and verify the annotated tag and GitHub prerelease with checksums.
 
 Only after items 1–3 pass should an annotated `v0.1.0b1` tag and hosted prerelease be created.
 Package upload, if ever desired, is a separate explicitly authorized action.
@@ -202,18 +202,17 @@ Package upload, if ever desired, is a separate explicitly authorized action.
 ## Exact remaining publication sequence
 
 ```text
-1. Commit and push this verified-gates documentation update.
+1. Commit and push this final release-note update.
 2. Observe all mandatory jobs green on that exact commit.
-3. Re-run the final secret scan and file-inventory review.
-4. Make the repository public and verify Private Vulnerability Reporting.
-5. Rebuild and verify release artifacts from the green commit.
-6. Create the annotated `v0.1.0b1` tag and GitHub prerelease with checksums.
-7. Do not upload to a package index without separate explicit authorization.
+3. Rebuild and verify release artifacts from the green commit.
+4. Create the annotated `v0.1.0b1` tag and GitHub prerelease with checksums.
+5. Verify the public repository, tag, release assets, links, and reporting channel.
+6. Do not upload to a package index without separate explicit authorization.
 ```
 
 ## Final statement
 
 The tree is a coherent, installable, locally and remotely verified research beta candidate and is
 **READY FOR PUBLIC RESEARCH-BETA RELEASE**. It is not production ready. The remaining procedural
-gates are a green final-documentation CI run, final hygiene review, and verified Private
-Vulnerability Reporting before the annotated tag and GitHub prerelease are created.
+gates are a green final release-note CI run and final artifact verification before the annotated
+tag and GitHub prerelease are created.
