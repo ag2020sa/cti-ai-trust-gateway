@@ -10,6 +10,13 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 SEED = 20260717
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "synthetic" / "generated"
+
+
+def repository_path(path: Path) -> str:
+    """Return a portable path without disclosing the build workstation."""
+    return path.relative_to(ROOT).as_posix()
+
+
 REPORTS = [
     ("en-01", "en", "OrchidDrop contacted 198.51.100.14 while exploiting CVE-2026-1001."),
     ("en-02", "en", "The actor is unknown. Beacon traffic reached frost-example.net."),
@@ -211,8 +218,8 @@ def main() -> None:
             {
                 "id": name,
                 "language": language,
-                "report": str(report_dir / "report.txt"),
-                "gold": str(report_dir / "gold.json"),
+                "report": repository_path(report_dir / "report.txt"),
+                "gold": repository_path(report_dir / "gold.json"),
                 "provenance": "original synthetic content",
                 "license": "Apache-2.0",
                 "expected_verdict": "PASS",
@@ -237,8 +244,8 @@ def main() -> None:
                 "id": f"mutation-{number:03d}",
                 "base": base_name,
                 "language": language,
-                "report": str(report_path),
-                "candidate": str(candidate_path),
+                "report": repository_path(report_path),
+                "candidate": repository_path(candidate_path),
                 "source_metadata": metadata,
                 "mutation_category": category,
                 "seed": SEED,

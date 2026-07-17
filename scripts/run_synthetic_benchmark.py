@@ -11,6 +11,17 @@ from cti_trust_gateway.storage.repository import Repository
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def resolve_manifest_path(value: str) -> Path:
+    """Resolve a repository-relative manifest path without allowing traversal."""
+    path = Path(value)
+    if path.is_absolute():
+        raise ValueError("Synthetic manifest paths must be repository-relative")
+    resolved = (ROOT / path).resolve()
+    if not resolved.is_relative_to(ROOT):
+        raise ValueError("Synthetic manifest path escapes the repository")
+    return resolved
+
+
 def main() -> None:
     manifest_path = ROOT / "data" / "synthetic" / "generated" / "manifest.json"
     records = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -25,9 +36,9 @@ def main() -> None:
             continue
         executed += 1
         case = service.analyze(
-            Path(record["report"]).read_bytes(),
+            resolve_manifest_path(record["report"]).read_bytes(),
             Path(record["report"]).name,
-            Path(record["candidate"]).read_bytes(),
+            resolve_manifest_path(record["candidate"]).read_bytes(),
             source_metadata=record.get("source_metadata"),
         )
         actual_categories = {finding.category.value for finding in case.findings}

@@ -24,6 +24,7 @@ No unreleased changes.
 - Fail-closed validation for missing, skipped, corrupted, or failed schema capability.
 - Hard export gates for REJECT, QUARANTINE, structurally invalid STIX, and rejected relationships.
 - Upload, JSON, PDF, browser, provider-error, and review-authorization hardening.
+- Repository-relative synthetic-manifest paths with absolute-path and traversal rejection.
 
 ### Known limitations
 
