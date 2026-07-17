@@ -88,8 +88,7 @@ downloads schemas. See `src/cti_trust_gateway/data/stix2.1/PROVENANCE.md`.
 
 ## Quick start with `uv`
 
-Python 3.12 and 3.13 are declared and configured in CI. Python 3.13 is locally verified; Python
-3.12 remains pending until the first green public workflow run.
+Python 3.12 and 3.13 are declared and verified in CI. Python 3.13 is also verified locally.
 
 ```bash
 uv venv --python 3.12
@@ -118,8 +117,8 @@ docker compose up --build
 ```
 
 The published port is bound to `127.0.0.1`. The container drops capabilities and persists only
-the local SQLite runtime volume. The Dockerfile and Compose configuration were statically reviewed;
-runtime verification remains pending the first green Docker CI job.
+the local SQLite runtime volume. The Dockerfile and Compose configuration were statically reviewed,
+and the image build plus live healthcheck are verified in CI.
 
 ## CLI
 
@@ -229,8 +228,8 @@ finding-category mismatch.
 The release candidate currently has 122 local tests (including 87 tests under the independent
 adversarial directory), 87.82% branch-aware coverage from the release-candidate run, a
 100-mutation benchmark with zero mismatches, and passing Ruff, mypy, and Bandit checks on Python
-3.13. The exact release-candidate totals are reproduced in `RELEASE_READINESS.md`. Python 3.12 and
-Docker runtime results must remain pending until the first mandatory CI run succeeds.
+3.13. The exact release-candidate totals are reproduced in `RELEASE_READINESS.md`. The mandatory
+Python 3.12, Python 3.13, packaging, and Docker build/health jobs are verified in GitHub Actions.
 
 MITRE ATT&CK identifiers are used with attribution and without endorsement. CTIBench is not
 vendored because it is CC BY-NC-SA; evaluate it separately under its license. See

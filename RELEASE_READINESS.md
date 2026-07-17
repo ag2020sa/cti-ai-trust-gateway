@@ -1,15 +1,16 @@
 # Release readiness: 0.1.0b1
 
-Prepared on 2026-07-17. This record covers a first public research MVP beta candidate. It does not
-authorize or record a commit, push, tag, repository creation, package upload, or hosted release.
+Prepared on 2026-07-17. This record covers the verified first public research MVP beta candidate.
+It records source publication preparation but no tag, package-index upload, or hosted release.
 
 ## Decision
 
-**CONDITIONAL** for an initial public source release; **not production ready**.
+**READY FOR PUBLIC RESEARCH-BETA RELEASE**; **not production ready**.
 
 The local source, package, schema-integrity, security, adversarial, API, CLI, and benchmark gates
-that can run on this host pass. Publication remains blocked on an observed green mandatory CI run
-and verified GitHub Private Vulnerability Reporting.
+pass. Mandatory Python 3.12, Python 3.13, package, and Docker build/health jobs passed in GitHub
+Actions. Tagging remains gated on a green run for the final documentation commit and verified
+GitHub Private Vulnerability Reporting.
 
 ## Repository boundary and safety
 
@@ -17,10 +18,9 @@ and verified GitHub Private Vulnerability Reporting.
 - Public-safe root name: `cti-ai-trust-gateway`. The user-specific absolute host prefix is
   intentionally excluded from this public document.
 - `.git` exists only at this root; its parent is not a Git worktree.
-- Branch: `main`; commit history: none; remotes: none; tags: none.
-- Initial and final repository content is untracked because the project has not received its first
-  commit. Release preparation therefore uses file inventory and status rather than a commit diff.
-- No commit, push, tag, remote, repository, or release was created.
+- Branch: `main`; remote: `https://github.com/ag2020sa/cti-ai-trust-gateway`; tags: none.
+- The initial release commit and one cross-platform filename-validation fix were pushed to the
+  private staging repository. No tag or hosted release exists.
 
 ### Previous outside-root schema activity
 
@@ -151,16 +151,17 @@ private IPv4 ranges, and internal/local domains. It returned no matches. `.env.e
 checked and contains no value for the optional model API key.
 
 This pattern scan is a documented fallback, not proof that every possible secret format is absent.
-The future public repository should enable secret scanning and push protection if available.
+Repository security features should remain enabled where GitHub makes them available.
 
 ## Python and Docker compatibility
 
 - Python 3.13.5: **VERIFIED locally** through quality, coverage, benchmark, API/CLI, build, and fresh
-  wheel-install checks.
-- Python 3.12: **PENDING mandatory CI**; no 3.12 interpreter is installed on this host.
+  wheel-install checks, and **VERIFIED in CI**.
+- Python 3.12: **VERIFIED in CI**; no 3.12 interpreter is installed on this host.
 - Dockerfile/Compose: **STATIC PASS** for a slim 3.12 image, non-root user, loopback-published Compose
   port, dropped capabilities, no-new-privileges, isolated runtime volume, and healthcheck.
-- Docker build/runtime: **PENDING mandatory CI**; no Docker CLI/daemon is installed on this host.
+- Docker build/runtime: **VERIFIED in CI** through an image build and live healthcheck; no Docker
+  CLI/daemon is installed on this host.
 
 No unavailable runtime is described as passing.
 
@@ -173,8 +174,11 @@ full-length SHA-pinned official checkout/setup actions, no allowed failures, and
 mypy, Bandit, dependency-audit, coverage, and packaging gates. Dependabot covers pip, GitHub Actions,
 and Docker updates.
 
-Workflow configuration is not execution evidence. All jobs must be observed green on the reviewed
-commit before a tag is created.
+GitHub Actions run
+[`29549259384`](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29549259384)
+passed on commit `770814e0683400120afa3443596d00a4f546e432`: Python 3.12 and 3.13 quality/tests,
+clean package build and outside-checkout installation, and Docker build/health all succeeded. The
+final documentation commit must also pass the complete workflow before a tag is created.
 
 ## Public documentation and community files
 
@@ -185,32 +189,31 @@ this readiness record. The README states research-beta status, threat/assurance 
 install/run/API/CLI/demo steps, schema provenance, bilingual behavior, benchmark/data licensing,
 known limitations, screenshots, security warnings, and roadmap.
 
-## Blocking items before publication or tagging
+## Remaining release gates before tagging
 
-1. Create the private staging repository only when authorized, enable GitHub Private Vulnerability Reporting,
-   test its private report path, and keep `SECURITY.md` aligned with the observed setting.
-2. Push a reviewed initial commit only when authorized and observe all mandatory Python 3.12,
-   Python 3.13, package, and Docker jobs green.
-3. Re-run the secret scan on the exact commit and review the final file inventory.
+1. Observe the complete workflow green on the final documentation commit.
+2. Re-run the secret scan on that exact commit and review the final file inventory.
+3. Make the repository public, enable and verify GitHub Private Vulnerability Reporting, and keep
+   `SECURITY.md` aligned with the observed setting.
 
-Only after items 1–3 pass should a signed/annotated `v0.1.0b1` tag and hosted release be considered.
+Only after items 1–3 pass should an annotated `v0.1.0b1` tag and hosted prerelease be created.
 Package upload, if ever desired, is a separate explicitly authorized action.
 
-## Exact future first-publication sequence
+## Exact remaining publication sequence
 
 ```text
-1. Review `git status --short` and the release artifact inventory; rerun local gates.
-2. Create and review the initial commit.
-3. Create the remote repository and push the branch.
-4. Enable private vulnerability reporting, secret scanning, and push protection where available.
-5. Observe mandatory Python 3.12, Python 3.13, package, and Docker jobs green.
-6. Re-run final release checks against the reviewed commit.
-7. Create an annotated `v0.1.0b1` tag and hosted beta release only with explicit authorization.
-8. Upload distributions only as a separate, explicitly authorized publishing step.
+1. Commit and push this verified-gates documentation update.
+2. Observe all mandatory jobs green on that exact commit.
+3. Re-run the final secret scan and file-inventory review.
+4. Make the repository public and verify Private Vulnerability Reporting.
+5. Rebuild and verify release artifacts from the green commit.
+6. Create the annotated `v0.1.0b1` tag and GitHub prerelease with checksums.
+7. Do not upload to a package index without separate explicit authorization.
 ```
 
 ## Final statement
 
-The tree is a coherent, installable, locally verified research beta candidate. It is not yet safe
-to call READY because required remote checks and private reporting settings do not exist. No code or
-artifact was published.
+The tree is a coherent, installable, locally and remotely verified research beta candidate and is
+**READY FOR PUBLIC RESEARCH-BETA RELEASE**. It is not production ready. The remaining procedural
+gates are a green final-documentation CI run, final hygiene review, and verified Private
+Vulnerability Reporting before the annotated tag and GitHub prerelease are created.

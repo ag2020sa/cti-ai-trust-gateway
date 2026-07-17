@@ -6,11 +6,9 @@ version semantics.
 
 ## [Unreleased]
 
-### Pending
+No unreleased changes.
 
-- Observe mandatory Python 3.12, Python 3.13, package, and Docker CI jobs before creating a tag.
-
-## [0.1.0b1] - Unreleased
+## [0.1.0b1] - 2026-07-17
 
 ### Added
 
@@ -30,5 +28,5 @@ version semantics.
 ### Known limitations
 
 - Research beta only; not production ready and not a compliance certification.
-- Python 3.12 and Docker runtime remain pending the first green GitHub Actions run.
+- Python 3.12, Python 3.13, packaging, and Docker build/health are verified in GitHub Actions.
 - Optional external semantic-provider behavior is not live-verified.
