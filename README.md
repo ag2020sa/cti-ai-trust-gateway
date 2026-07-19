@@ -6,6 +6,8 @@
 
 > They generate intelligence. We verify it before it becomes operational.
 
+**Evidence-grounded trust gateway for AI-generated cyber threat intelligence.**
+
 **Research MVP / Beta (`0.2.0b1`) — local evaluation only, not production ready.**
 
 > **OpenCTI Draft delivery is EXPERIMENTAL, disabled by default, contract-tested, and not live-verified.**
@@ -19,10 +21,12 @@ Repository: [github.com/ag2020sa/cti-ai-trust-gateway](https://github.com/ag2020
 
 AI extraction can turn a report into polished STIX while silently changing an IP, inventing an
 actor, overstating confidence, or treating two names on the same page as a proven relationship.
-This local-first gateway sits between that producer and OpenCTI, MISP, a SIEM, or an EDR. It binds
-candidate claims to the supplied source, applies a transparent policy, asks an analyst where
-evidence is insufficient, exports only approved objects, and can stage that exact approved graph
-in an isolated OpenCTI Draft for a second manual review.
+This local-first gateway is designed as a validation boundary before downstream CTI and security
+systems. It binds candidate claims to the supplied source, applies a transparent policy, asks an
+analyst where evidence is insufficient, and exports only approved objects. This release implements
+approved-only STIX/evidence export and experimental OpenCTI Draft delivery. It does not provide
+MISP, SIEM, or EDR integrations; those remain potential future downstream adapters. The OpenCTI
+path can stage the exact approved graph in an isolated Draft for a second manual review.
 
 For example, a report says exploitation of CVE-2026-1234 is possible, the actor is unknown, and
 the observed IP is `203.0.113.53`. An AI bundle says APT28 exploited it from `203.0.113.58` with
