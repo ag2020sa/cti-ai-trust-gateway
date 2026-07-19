@@ -8,6 +8,42 @@ version semantics.
 
 No unreleased changes.
 
+## [0.2.0b1] - 2026-07-19
+
+### Added
+
+- Added an integrity-pinned OpenCTI `7.260715.0` compatibility profile, deterministic graph and
+  dependency checks, 19 original bilingual/mixed test-only contract fixtures, and packaged-install
+  checks that prove those fixtures are excluded from the wheel.
+- Added persisted, exact-byte approved artifacts and offline Draft delivery plans with source,
+  candidate, validation, policy, approval, profile, graph, artifact, and destination digests.
+- Added `cti-trust opencti check|plan|probe|deliver|status|history|reconcile`, network-free plan/read
+  API routes, and an OpenCTI Draft readiness card in the analyst UI.
+
+### Changed
+
+- Expanded supported claim/evidence and STIX validation paths for the Phase 1 OpenCTI mission
+  types while preserving exact source spans and existing fail-closed export behavior.
+- Raised the full branch-coverage gate to 90% and added a 95% combined OpenCTI critical-path gate
+  with a 90% minimum for every critical module/path.
+
+### Security
+
+- Live delivery is disabled and dry-run by default, requires explicit CLI execution plus the full
+  plan SHA-256, and revalidates approval, artifact, destination, platform, connector, and marking
+  capabilities immediately before submission.
+- Added exact host allowlisting, IDNA normalization, all-answer DNS/SSRF controls, verified TLS and
+  SNI, optional CA pinning, blocked redirects/proxies, bounded responses and polling, secret-safe
+  errors, concurrency reservation, duplicate suppression, and explicit ambiguous-state
+  reconciliation without blind retry.
+
+### Known limitations
+
+- Delivery stages data only in an OpenCTI Draft and still requires separate OpenCTI analyst
+  approval; it does not claim atomic or exactly-once behavior.
+- The pinned GraphQL contract is covered by deterministic offline doubles. No disposable OpenCTI
+  instance was available for a live end-to-end run in this implementation environment.
+
 ## [0.1.0b2] - 2026-07-17
 
 ### Changed

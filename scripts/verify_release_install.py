@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import json
 import os
+import sysconfig
 import tempfile
 from pathlib import Path
 
 import cti_trust_gateway
 from cti_trust_gateway import __version__
 from cti_trust_gateway.api.app import create_app
+from cti_trust_gateway.compatibility.profile import (
+    OPENCTI_PROFILE_SHA256,
+    load_opencti_profile,
+)
 from cti_trust_gateway.config import bundled_policy_path
 from cti_trust_gateway.core.service import GatewayService
 from cti_trust_gateway.domain.models import ValidationStatus, Verdict
@@ -44,13 +49,25 @@ def _bundle(value: str, *, valid_id: bool = True) -> bytes:
 
 
 def main() -> None:
-    assert __version__ == "0.1.0b2"
+    assert __version__ == "0.2.0b1"
     assert "site-packages" in Path(cti_trust_gateway.__file__).resolve().parts
     assert bundled_policy_path().is_file()
     schema_files = list(BUNDLED_SCHEMA_DIR.rglob("*.json"))
     assert len(schema_files) == 57
     assert SCHEMA_COMMIT == "c4f8d589acf2bdb3783655c89e0ffb6e150006ae"
     assert _schema_hash(BUNDLED_SCHEMA_DIR) == SCHEMA_SHA256
+    profile = load_opencti_profile()
+    assert profile.metadata.id == "opencti-7.260715.0"
+    assert profile.metadata.profile_sha256 == OPENCTI_PROFILE_SHA256
+    notices = (
+        Path(sysconfig.get_path("data"))
+        / "share"
+        / "doc"
+        / "cti-ai-trust-gateway"
+        / "THIRD_PARTY_NOTICES.md"
+    )
+    assert notices.is_file()
+    assert profile.metadata.opencti_commit in notices.read_text(encoding="utf-8")
 
     with tempfile.TemporaryDirectory() as temporary:
         database = Path(temporary) / "release.db"
@@ -92,6 +109,9 @@ def main() -> None:
         f"version={__version__}",
         f"schemas={len(schema_files)}",
         f"schema_sha256={SCHEMA_SHA256}",
+        f"opencti_profile_sha256={OPENCTI_PROFILE_SHA256}",
+        "opencti_test_fixtures=excluded",
+        "third_party_notices=present",
         "validation=EXECUTED",
     )
 

@@ -31,3 +31,26 @@ trademark of The MITRE Corporation. No endorsement is implied.
 The repository includes one small public-domain, schema-shaped NVD/CISA test
 record. “This product uses data from the NVD API but is not endorsed or
 certified by the NVD.” It is a static fixture, not a current vulnerability feed.
+
+## OpenCTI public interface research
+
+The OpenCTI Phase 1 compatibility profile and clean-room adapter were researched from public
+interface facts in the Apache-2.0-licensed OpenCTI repositories. No upstream implementation code,
+fixtures, or GraphQL source text is copied into this repository; the short GraphQL operations here
+were independently authored to call the documented schema. The exact research pins are:
+
+- OpenCTI platform commit `148ceb414d1338d7c10ff79f0302d0a03dae332f`:
+  <https://github.com/OpenCTI-Platform/opencti/tree/148ceb414d1338d7c10ff79f0302d0a03dae332f>
+- PyCTI release/version `7.260715.0` within that repository.
+- OpenCTI connectors commit `b70a94b526574a040953cba73b3c76ec3ead6f21`:
+  <https://github.com/OpenCTI-Platform/connectors/tree/b70a94b526574a040953cba73b3c76ec3ead6f21>
+- OpenCTI Apache-2.0 license:
+  <https://github.com/OpenCTI-Platform/opencti/blob/148ceb414d1338d7c10ff79f0302d0a03dae332f/LICENSE>
+
+The exact interface files used for compatibility research are linked in
+`docs/opencti-phase1.md`. The 19 bilingual/mixed OpenCTI contract fixtures are original test-only
+data authored for this project and are excluded from release wheels.
+
+OpenCTI and related names and marks belong to their respective owners. Compatibility references
+are for identification and interoperability research only and do not imply sponsorship,
+certification, partnership, or endorsement by Filigran or the OpenCTI project.

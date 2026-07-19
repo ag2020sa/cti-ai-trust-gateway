@@ -15,6 +15,7 @@ from uuid import uuid4
 import stix2
 from stix2validator import ValidationOptions, validate_string
 
+from cti_trust_gateway.core.canonical import canonical_bytes
 from cti_trust_gateway.domain.models import (
     CandidateBundle,
     Finding,
@@ -27,6 +28,8 @@ from cti_trust_gateway.domain.models import (
 SCHEMA_COMMIT = "c4f8d589acf2bdb3783655c89e0ffb6e150006ae"
 SCHEMA_SHA256 = "43c2bf45bbaeeb44e5852553abffdebeaaa1584111d92d8a8d3a3101d8bd220f"
 BUNDLED_SCHEMA_DIR = Path(__file__).parents[1] / "data" / "stix2.1" / "schemas"
+OPENCTI_CHANNEL_EXTENSION_ID = "extension-definition--be4ebfff-c203-4698-8853-4797fa138ec7"
+OPENCTI_CHANNEL_CREATED_BY = "identity--32207a20-5ece-40d2-b7a7-c5c207a12244"
 
 SUPPORTED_TYPES = {
     "indicator",
@@ -43,6 +46,15 @@ SUPPORTED_TYPES = {
     "campaign",
     "report",
     "relationship",
+    "identity",
+    "location",
+    "channel",
+    "autonomous-system",
+    "email-addr",
+    "mac-addr",
+    "windows-registry-key",
+    "marking-definition",
+    "extension-definition",
 }
 ID_RE = re.compile(r"^(?P<type>[a-z0-9-]+)--[0-9a-fA-F-]{36}$")
 ALLOWED_RELATIONSHIPS = {
@@ -60,6 +72,8 @@ ALLOWED_RELATIONSHIPS = {
     "downloads",
     "communicates-with",
     "consists-of",
+    "originates-from",
+    "located-at",
     "investigates",
     "based-on",
 }
@@ -139,7 +153,11 @@ def _assert_schema_coverage(schema_dir: Path, raw: dict[str, Any]) -> None:
     available = {path.name for path in schema_dir.rglob("*.json")}
     required = {"bundle.json", "core.json", "cyber-observable-core.json"}
     for obj in raw.get("objects", []):
-        if isinstance(obj, dict) and isinstance(obj.get("type"), str):
+        if (
+            isinstance(obj, dict)
+            and isinstance(obj.get("type"), str)
+            and obj.get("type") != "channel"
+        ):
             required.add(f"{obj['type']}.json")
     missing = sorted(required - available)
     if missing:
@@ -187,8 +205,14 @@ def _run_schema_validation(raw: dict[str, Any]) -> tuple[ValidationCapability, l
         )
         return capability, [_capability_finding("STIX-VALIDATION-UNAVAILABLE", message)]
     try:
+        standard_raw = dict(raw)
+        standard_raw["objects"] = [
+            obj
+            for obj in raw.get("objects", [])
+            if not isinstance(obj, dict) or obj.get("type") != "channel"
+        ]
         result = validate_string(
-            json.dumps(raw),
+            json.dumps(standard_raw, allow_nan=False),
             ValidationOptions(version="2.1", strict_properties=False, schema_dir=str(schema_dir)),
         )
     except Exception as exc:
@@ -222,6 +246,10 @@ def _run_schema_validation(raw: dict[str, Any]) -> tuple[ValidationCapability, l
     return capability, findings
 
 
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"non-finite JSON number: {value}")
+
+
 def parse_candidate(data: bytes | str | dict[str, Any]) -> dict[str, Any]:
     if isinstance(data, dict):
         raw = data
@@ -229,9 +257,13 @@ def parse_candidate(data: bytes | str | dict[str, Any]) -> dict[str, Any]:
         if not data:
             raise CandidateError("Candidate is empty")
         try:
-            raw = json.loads(data)
-        except (json.JSONDecodeError, UnicodeDecodeError, RecursionError) as exc:
+            raw = json.loads(data, parse_constant=_reject_json_constant)
+        except (json.JSONDecodeError, UnicodeDecodeError, RecursionError, ValueError) as exc:
             raise CandidateError("Candidate is not valid UTF-8 JSON") from exc
+    try:
+        canonical_bytes(raw)
+    except (TypeError, ValueError, UnicodeError) as exc:
+        raise CandidateError("Candidate contains a non-interoperable JSON value") from exc
     _check_json_shape(raw)
     if not isinstance(raw, dict) or raw.get("type") != "bundle":
         raise CandidateError("Candidate must be a STIX bundle object")
@@ -250,6 +282,42 @@ def _valid_timestamp(value: Any) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _validate_opencti_channel(obj: dict[str, Any], object_id: str) -> list[Finding]:
+    extensions = obj.get("extensions")
+    extension_ids = set(extensions) if isinstance(extensions, dict) else set()
+    definition = (
+        extensions.get(OPENCTI_CHANNEL_EXTENSION_ID) if isinstance(extensions, dict) else None
+    )
+    extension_properties = (
+        definition.get("extension_properties") if isinstance(definition, dict) else None
+    )
+    extension_property_set = (
+        set(extension_properties) if isinstance(extension_properties, list) else set()
+    )
+    valid = (
+        isinstance(definition, dict)
+        and definition.get("type") == "extension-definition"
+        and definition.get("spec_version") == "2.1"
+        and definition.get("id") == OPENCTI_CHANNEL_EXTENSION_ID
+        and definition.get("created_by_ref") == OPENCTI_CHANNEL_CREATED_BY
+        and definition.get("name") == "Channel"
+        and definition.get("version") == "1.0.0"
+        and definition.get("extension_types") == ["new-sdo"]
+        and extension_property_set == {"name", "description", "aliases", "channel_types"}
+        and isinstance(definition.get("schema"), str)
+        and "'channel'" in definition["schema"]
+    )
+    if valid and extension_ids == {OPENCTI_CHANNEL_EXTENSION_ID}:
+        return []
+    return [
+        _finding(
+            "STIX-OPENCTI-CHANNEL-001",
+            "Channel must use the exact extension representation pinned to OpenCTI 7.260715.0",
+            [object_id],
+        )
+    ]
 
 
 def validate_candidate(raw: dict[str, Any]) -> tuple[CandidateBundle, list[Finding]]:
@@ -275,9 +343,14 @@ def validate_candidate(raw: dict[str, Any]) -> tuple[CandidateBundle, list[Findi
         if not match or match.group("type") != object_type:
             findings.append(_finding("STIX-ID-001", f"Invalid STIX identifier: {object_id!r}"))
         elif object_id in ids:
-            findings.append(
-                _finding("STIX-DUPLICATE-001", f"Duplicate object id: {object_id}", [object_id])
-            )
+            if canonical_bytes(object_by_id[object_id]) != canonical_bytes(obj):
+                findings.append(
+                    _finding(
+                        "STIX-DUPLICATE-CONFLICT-001",
+                        f"Conflicting objects share id: {object_id}",
+                        [object_id],
+                    )
+                )
         else:
             ids.add(object_id)
             object_by_id[object_id] = obj
@@ -305,7 +378,12 @@ def validate_candidate(raw: dict[str, Any]) -> tuple[CandidateBundle, list[Findi
             "ipv6-addr": ("value",),
             "domain-name": ("value",),
             "url": ("value",),
-            "file": ("hashes",),
+            "autonomous-system": ("number",),
+            "email-addr": ("value",),
+            "mac-addr": ("value",),
+            "windows-registry-key": ("key",),
+            "identity": ("name", "identity_class"),
+            "channel": ("name",),
             "vulnerability": ("name",),
             "attack-pattern": ("name",),
             "malware": ("name",),
@@ -313,6 +391,7 @@ def validate_candidate(raw: dict[str, Any]) -> tuple[CandidateBundle, list[Findi
             "intrusion-set": ("name",),
             "campaign": ("name",),
             "report": ("name", "published", "object_refs"),
+            "extension-definition": ("name", "schema", "version", "extension_types"),
         }
         missing = [field for field in required.get(str(object_type), ()) if field not in obj]
         if missing:
@@ -323,7 +402,37 @@ def validate_candidate(raw: dict[str, Any]) -> tuple[CandidateBundle, list[Findi
                     [object_id],
                 )
             )
-        if object_type == "indicator" and "pattern" in obj:
+        if object_type == "file" and not (obj.get("hashes") or obj.get("name")):
+            findings.append(
+                _finding(
+                    "STIX-REQUIRED-001",
+                    f"{object_id} requires hashes or name",
+                    [object_id],
+                )
+            )
+        if object_type == "location" and not any(
+            obj.get(field) for field in ("name", "region", "country", "administrative_area", "city")
+        ):
+            findings.append(
+                _finding(
+                    "STIX-REQUIRED-001",
+                    f"{object_id} requires a profiled location value",
+                    [object_id],
+                )
+            )
+        if object_type == "marking-definition" and not (
+            (obj.get("definition_type") and obj.get("definition")) or obj.get("extensions")
+        ):
+            findings.append(
+                _finding(
+                    "STIX-REQUIRED-001",
+                    f"{object_id} requires a marking definition",
+                    [object_id],
+                )
+            )
+        if object_type == "channel":
+            findings.extend(_validate_opencti_channel(obj, str(object_id)))
+        elif object_type == "indicator" and "pattern" in obj:
             try:
                 stix2.parse(obj, allow_custom=True)
             except Exception as exc:

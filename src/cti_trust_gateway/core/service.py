@@ -8,7 +8,9 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from cti_trust_gateway.core.canonical import canonical_bytes, normalize_stix, sha256_bytes
 from cti_trust_gateway.core.claims import extract_claims
+from cti_trust_gateway.core.snapshots import analysis_snapshot_sha256
 from cti_trust_gateway.domain.models import (
     AnalysisCase,
     EvidenceManifest,
@@ -111,12 +113,20 @@ class GatewayService:
                     recommended_action="Keep the case in the restricted local handling boundary.",
                 )
             )
-        policy = evaluate_policy(findings, load_policy(policy_path or self.default_policy))
+        selected_policy = policy_path or self.default_policy
+        policy = evaluate_policy(findings, load_policy(selected_policy))
         if (
             candidate.validation.status != ValidationStatus.EXECUTED
             and policy.verdict.value == "PASS"
         ):
             raise RuntimeError("Invariant violation: PASS without executed mandatory validation")
+        candidate_input = (
+            candidate_data
+            if isinstance(candidate_data, bytes)
+            else candidate_data.encode("utf-8")
+            if isinstance(candidate_data, str)
+            else canonical_bytes(candidate_data)
+        )
         case = AnalysisCase(
             id=f"case--{uuid4()}",
             source=source,
@@ -128,19 +138,23 @@ class GatewayService:
             evidence_coverage=evidence_coverage(claims),
             metadata={
                 "tlp": tlp,
-                "candidate_sha256": hashlib.sha256(
-                    candidate_data
-                    if isinstance(candidate_data, bytes)
-                    else str(candidate_data).encode("utf-8")
-                ).hexdigest(),
+                "candidate_raw_sha256": sha256_bytes(candidate_input),
+                "candidate_sha256": sha256_bytes(canonical_bytes(normalize_stix(raw))),
+                "candidate_canonical_sha256": sha256_bytes(canonical_bytes(normalize_stix(raw))),
+                "policy_sha256": hashlib.sha256(selected_policy.read_bytes()).hexdigest(),
             },
         )
+        case.metadata["analysis_snapshot_sha256"] = analysis_snapshot_sha256(case)
         case.audit.append(
             self.repository.make_event(
                 case,
                 "case.analyzed",
                 "gateway",
-                {"verdict": case.verdict.value, "source_sha256": source.sha256},
+                {
+                    "verdict": case.verdict.value,
+                    "source_sha256": source.sha256,
+                    "analysis_snapshot_sha256": case.metadata["analysis_snapshot_sha256"],
+                },
             )
         )
         self.repository.save(case)

@@ -1,0 +1,161 @@
+{
+  "provenance": {
+    "license": "Apache-2.0",
+    "origin": "Original synthetic fixtures created for CTI AI Trust Gateway",
+    "opencti_commit": "148ceb414d1338d7c10ff79f0302d0a03dae332f",
+    "pycti_version": "7.260715.0",
+    "connectors_commit": "b70a94b526574a040953cba73b3c76ec3ead6f21"
+  },
+  "cases": [
+    {
+      "id": "valid-ip-en",
+      "language": "en",
+      "source": "Observed 203.0.113.9.",
+      "bundle": [{"type": "ipv4-addr", "spec_version": "2.1", "id": "ipv4-addr--00000000-0000-4000-8000-000000000001", "value": "203.0.113.9"}],
+      "expected_codes": []
+    },
+    {
+      "id": "autonomous-system-en",
+      "language": "en",
+      "source": "Traffic originated from AS64500.",
+      "bundle": [{"type": "autonomous-system", "spec_version": "2.1", "id": "autonomous-system--00000000-0000-4000-8000-000000000002", "number": 64500}],
+      "expected_codes": []
+    },
+    {
+      "id": "email-ar",
+      "language": "ar",
+      "source": "تم رصد البريد analyst@example.test في الرسالة.",
+      "bundle": [{"type": "email-addr", "spec_version": "2.1", "id": "email-addr--00000000-0000-4000-8000-000000000003", "value": "analyst@example.test"}],
+      "expected_codes": []
+    },
+    {
+      "id": "mac-mixed",
+      "language": "mixed",
+      "source": "MAC المرصود 00:11:22:33:44:55.",
+      "bundle": [{"type": "mac-addr", "spec_version": "2.1", "id": "mac-addr--00000000-0000-4000-8000-000000000004", "value": "00:11:22:33:44:55"}],
+      "expected_codes": []
+    },
+    {
+      "id": "registry-key-en",
+      "language": "en",
+      "source": "Changed HKLM\\Software\\Orchid.",
+      "bundle": [{"type": "windows-registry-key", "spec_version": "2.1", "id": "windows-registry-key--00000000-0000-4000-8000-000000000005", "key": "HKLM\\Software\\Orchid"}],
+      "expected_codes": []
+    },
+    {
+      "id": "file-name-hash-en",
+      "language": "en",
+      "source": "dropper.exe had MD5 d41d8cd98f00b204e9800998ecf8427e.",
+      "bundle": [{"type": "file", "spec_version": "2.1", "id": "file--00000000-0000-4000-8000-000000000006", "name": "dropper.exe", "hashes": {"MD5": "d41d8cd98f00b204e9800998ecf8427e"}}],
+      "expected_codes": []
+    },
+    {
+      "id": "identity-en",
+      "language": "en",
+      "source": "Example Labs is an organization.",
+      "bundle": [{"type": "identity", "spec_version": "2.1", "id": "identity--00000000-0000-4000-8000-000000000007", "name": "Example Labs", "identity_class": "organization"}],
+      "expected_codes": []
+    },
+    {
+      "id": "location-ar",
+      "language": "ar",
+      "source": "الموقع Riyadh داخل SA.",
+      "bundle": [{"type": "location", "spec_version": "2.1", "id": "location--00000000-0000-4000-8000-000000000008", "name": "Riyadh", "country": "SA", "x_opencti_location_type": "Country"}],
+      "expected_codes": []
+    },
+    {
+      "id": "tool-en",
+      "language": "en",
+      "source": "The actor used NetProbe.",
+      "bundle": [{"type": "tool", "spec_version": "2.1", "id": "tool--00000000-0000-4000-8000-000000000009", "name": "NetProbe"}],
+      "expected_codes": []
+    },
+    {
+      "id": "channel-mixed",
+      "language": "mixed",
+      "source": "Channel قناة-ألف was monitored.",
+      "bundle": [{"type": "channel", "spec_version": "2.1", "id": "channel--00000000-0000-4000-8000-000000000010", "name": "قناة-ألف", "channel_types": ["forum"], "extensions": {"extension-definition--be4ebfff-c203-4698-8853-4797fa138ec7": {"type": "extension-definition", "spec_version": "2.1", "id": "extension-definition--be4ebfff-c203-4698-8853-4797fa138ec7", "created_by_ref": "identity--32207a20-5ece-40d2-b7a7-c5c207a12244", "created": "2025-09-10T00:00:00.000Z", "modified": "2025-09-10T00:00:00.000Z", "name": "Channel", "description": "Extension for creating channel objects in STIX", "schema": "{'type': 'object', 'properties': {'type': {'const': 'channel'}}}", "version": "1.0.0", "extension_types": ["new-sdo"], "extension_properties": ["name", "description", "aliases", "channel_types"]}}}],
+      "expected_codes": []
+    },
+    {
+      "id": "report-admin-refs",
+      "language": "en",
+      "source": "Daily report observed 203.0.113.10.",
+      "bundle": [
+        {"type": "ipv4-addr", "spec_version": "2.1", "id": "ipv4-addr--00000000-0000-4000-8000-000000000011", "value": "203.0.113.10"},
+        {"type": "report", "spec_version": "2.1", "id": "report--00000000-0000-4000-8000-000000000011", "name": "Daily report", "published": "2026-07-18T00:00:00Z", "report_types": ["threat-report"], "object_refs": ["ipv4-addr--00000000-0000-4000-8000-000000000011"]}
+      ],
+      "expected_codes": []
+    },
+    {
+      "id": "relationship-uses",
+      "language": "en",
+      "source": "CedarFox uses GlassRAT.",
+      "bundle": [
+        {"type": "intrusion-set", "spec_version": "2.1", "id": "intrusion-set--00000000-0000-4000-8000-000000000012", "name": "CedarFox"},
+        {"type": "malware", "spec_version": "2.1", "id": "malware--00000000-0000-4000-8000-000000000012", "name": "GlassRAT", "is_family": false},
+        {"type": "relationship", "spec_version": "2.1", "id": "relationship--00000000-0000-4000-8000-000000000012", "relationship_type": "uses", "source_ref": "intrusion-set--00000000-0000-4000-8000-000000000012", "target_ref": "malware--00000000-0000-4000-8000-000000000012"}
+      ],
+      "expected_codes": []
+    },
+    {
+      "id": "illegal-relationship",
+      "language": "en",
+      "source": "Synthetic illegal tuple.",
+      "bundle": [
+        {"type": "identity", "spec_version": "2.1", "id": "identity--00000000-0000-4000-8000-000000000013", "name": "Example", "identity_class": "organization"},
+        {"type": "tool", "spec_version": "2.1", "id": "tool--00000000-0000-4000-8000-000000000013", "name": "Probe"},
+        {"type": "relationship", "spec_version": "2.1", "id": "relationship--00000000-0000-4000-8000-000000000013", "relationship_type": "exploits", "source_ref": "identity--00000000-0000-4000-8000-000000000013", "target_ref": "tool--00000000-0000-4000-8000-000000000013"}
+      ],
+      "expected_codes": ["OPENCTI_ILLEGAL_RELATIONSHIP"]
+    },
+    {
+      "id": "unsupported-type",
+      "language": "en",
+      "source": "Campaign Example appeared.",
+      "bundle": [{"type": "campaign", "spec_version": "2.1", "id": "campaign--00000000-0000-4000-8000-000000000014", "name": "Example"}],
+      "expected_codes": ["OPENCTI_UNSUPPORTED_TYPE"]
+    },
+    {
+      "id": "unsupported-custom-property",
+      "language": "en",
+      "source": "CVE-2026-1000 affects Product A.",
+      "bundle": [{"type": "vulnerability", "spec_version": "2.1", "id": "vulnerability--00000000-0000-4000-8000-000000000015", "name": "CVE-2026-1000", "x_unreviewed": "Product A"}],
+      "expected_codes": ["OPENCTI_UNSUPPORTED_CUSTOM_PROPERTY"]
+    },
+    {
+      "id": "missing-dependency",
+      "language": "en",
+      "source": "Report with a missing reference.",
+      "bundle": [{"type": "report", "spec_version": "2.1", "id": "report--00000000-0000-4000-8000-000000000016", "name": "Missing ref", "published": "2026-07-18T00:00:00Z", "object_refs": ["ipv4-addr--00000000-0000-4000-8000-999999999999"]}],
+      "expected_codes": ["OPENCTI_MISSING_DEPENDENCY"]
+    },
+    {
+      "id": "version-mismatch",
+      "language": "en",
+      "source": "Observed 203.0.113.17.",
+      "bundle": [{"type": "ipv4-addr", "spec_version": "2.0", "id": "ipv4-addr--00000000-0000-4000-8000-000000000017", "value": "203.0.113.17"}],
+      "expected_codes": ["OPENCTI_VERSION_MISMATCH"]
+    },
+    {
+      "id": "tlp-red-default-block",
+      "language": "en",
+      "source": "Restricted 203.0.113.18.",
+      "bundle": [
+        {"type": "marking-definition", "spec_version": "2.1", "id": "marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed", "created": "2026-07-18T00:00:00Z", "definition_type": "tlp", "definition": {"tlp": "red"}},
+        {"type": "ipv4-addr", "spec_version": "2.1", "id": "ipv4-addr--00000000-0000-4000-8000-000000000018", "value": "203.0.113.18", "object_marking_refs": ["marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed"]}
+      ],
+      "expected_codes": ["OPENCTI_TLP_RED_BLOCKED"]
+    },
+    {
+      "id": "dependency-cycle",
+      "language": "mixed",
+      "source": "تقارير synthetic cycle.",
+      "bundle": [
+        {"type": "report", "spec_version": "2.1", "id": "report--00000000-0000-4000-8000-000000000019", "name": "A", "published": "2026-07-18T00:00:00Z", "object_refs": ["report--00000000-0000-4000-8000-000000000020"]},
+        {"type": "report", "spec_version": "2.1", "id": "report--00000000-0000-4000-8000-000000000020", "name": "B", "published": "2026-07-18T00:00:00Z", "object_refs": ["report--00000000-0000-4000-8000-000000000019"]}
+      ],
+      "expected_codes": ["OPENCTI_DEPENDENCY_CYCLE"]
+    }
+  ]
+}

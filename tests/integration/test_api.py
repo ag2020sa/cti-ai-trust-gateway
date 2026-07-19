@@ -17,7 +17,7 @@ def test_health_security_headers_and_not_found(tmp_path: Path) -> None:
     api = client(tmp_path)
     response = api.get("/health")
     assert response.json()["status"] == "ok"
-    assert response.json()["version"] == "0.1.0b2"
+    assert response.json()["version"] == "0.2.0b1"
     assert response.headers["x-content-type-options"] == "nosniff"
     assert api.get("/api/v1/cases/missing").status_code == 404
 

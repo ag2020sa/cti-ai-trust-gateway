@@ -1,219 +1,147 @@
-# Release record and corrective readiness: 0.1.0b2
+# Release readiness: 0.2.0b1
 
-Prepared on 2026-07-17. The annotated `v0.1.0b1` tag and public GitHub prerelease have been
-published with a source distribution, universal wheel, and SHA-256 checksum manifest. This record
-also defines the narrowly scoped corrective `v0.1.0b2` beta. Neither release was uploaded to a
-package index or container registry.
+Prepared on 2026-07-19 for the staged GitHub prerelease
+`v0.2.0b1 — OpenCTI Draft Delivery Research Beta`.
 
 ## Decision
 
-**READY FOR A CORRECTIVE PUBLIC RESEARCH-BETA RELEASE**; **not production ready**.
+**READY FOR PULL-REQUEST AND MANDATORY CI VALIDATION; not yet tagged and not production-ready.**
 
-The local source, package, schema-integrity, security, adversarial, API, CLI, and benchmark gates
-pass. Mandatory Python 3.12, Python 3.13, package, and Docker build/health jobs are enforced in
-GitHub Actions. The repository is public, and GitHub Private Vulnerability Reporting, secret
-scanning, and push protection are enabled. Every corrective prerelease remains gated on a green
-final `main` run and artifact verification from that exact commit.
+The audited OpenCTI Phase 1 implementation and release metadata pass the complete local source,
+security, adversarial, coverage, schema, benchmark, package, installed-wheel, CLI, and API gates.
+Publication remains conditional on all required pull-request and final `main` GitHub Actions checks,
+exact-clean-commit artifact reproduction, and public anonymous download verification.
 
-## Repository boundary and safety
+> **OpenCTI Draft delivery is EXPERIMENTAL, disabled by default, contract-tested, and not live-verified.**
 
-- True Git root: `.` — the directory containing this file and `.git`.
-- Public-safe root name: `cti-ai-trust-gateway`. The user-specific absolute host prefix is
-  intentionally excluded from this public document.
-- `.git` exists only at this root; its parent is not a Git worktree.
-- Branch: `main`; remote: `https://github.com/ag2020sa/cti-ai-trust-gateway`.
-- The immutable annotated `v0.1.0b1` tag and public GitHub prerelease exist. `v0.1.0b2` supersedes
-  it for new downloads without moving or replacing the historical tag or assets.
+## Scope and assurance boundary
 
-### Previous outside-root schema activity
+This research beta verifies AI-produced CTI against the supplied source and policy before export.
+OpenCTI Phase 1 can place only the deterministic, approved dependency-closed STIX graph into an
+isolated Draft. `VALID_STIX`, `OPENCTI_COMPATIBLE`, `EVIDENCE_VERIFIED`, and
+`DELIVERY_AUTHORIZED` remain independent gates.
 
-Read-only inspection found the earlier temporary hierarchy at
-`../src/cti_trust_gateway/data/stix2.1/schemas/`. It contains eight empty directories and zero
-files. The prior schema import had moved the actual files into the intended package tree and
-removed the temporary files, leaving only those empty directories. They are outside the Git root,
-were not modified or deleted during release preparation, and are not release content.
+The API and UI are unauthenticated, local-evaluation interfaces and cannot initiate live delivery.
+CLI delivery requires environment enablement, `--execute`, and the full stored SHA-256 integrity
+digest. The digest is not a signature. OpenCTI human validation remains mandatory; there is no
+automatic live-graph promotion, blind retry, atomic cross-system transaction, or exactly-once
+guarantee. Ambiguous outcomes remain `UNKNOWN` or `PARTIAL` until explicit status-only
+reconciliation.
 
-The correct release source is `src/cti_trust_gateway/data/stix2.1/`: 57 JSON schemas plus OASIS
-license/provenance/manifest files. The build confirmed that all 57 JSON files are present in the
-wheel under `cti_trust_gateway/data/stix2.1/`.
+## Version and immutable history
 
-One disposable virtual environment and working directory were created under the operating-system
-temporary directory solely for the required outside-checkout wheel test. Their generated path was
-verified as a dedicated temporary child and removed after the successful test. No persistent
-outside-root modification remains.
+- Active package, API, CLI resource verifier, citation, test, and container-test version:
+  `0.2.0b1`.
+- Planned annotated tag: `v0.2.0b1` on the exact clean squash-merge commit.
+- `v0.1.0b1` and `v0.1.0b2`, their annotations, release notes, checksums, and public assets remain
+  immutable historical releases.
+- No package-index or container-registry publication is planned.
+- A future `v0.2.0b2` is reserved for work following an isolated live OpenCTI Draft test; no stable
+  release commitment exists.
 
-## Release content hygiene
+## Local verification record
 
-- `.gitignore` excludes virtual environments, Python caches, coverage output, build output,
-  editable metadata, local environment files, databases, runtime uploads/exports, logs, and IDE
-  state while preserving `.env.example`.
-- `.dockerignore` excludes Git/CI metadata, development caches, coverage, distributions, runtime
-  data, tests, docs, examples, logs, databases, and local environment files.
-- The existing `.venv`, caches, coverage report, local SQLite databases, exports, and other runtime
-  artifacts are ignored and were not included in either distribution.
-- The sdist/wheel inventory contained no Git state, virtual environment, caches, coverage output,
-  runtime database, upload, export, log, or build directory. `.env.example` is intentionally in the
-  sdist and contains only empty/safe defaults; it is not in the runtime wheel.
-- Examples, generated benchmark cases, fixtures, and screenshots use synthetic content and reserved
-  documentation IP space. The detailed screenshot was regenerated locally after the indicator
-  cleanup and contains no personal or operational CTI.
-- Public documentation uses relative project paths and does not expose a private local filesystem
-  prefix.
+Reproduced on Windows with Python 3.13.5:
 
-## Version and package metadata
+| Gate | Required result |
+| --- | --- |
+| Ruff format and lint | Pass |
+| strict mypy | Pass, 39 source files |
+| Bandit | Pass |
+| pip-audit `--local` | No known dependency vulnerabilities; unpublished local project skipped |
+| Full suite | 224 passed |
+| Independent adversarial suite | 150 passed |
+| Overall branch-aware coverage | 90.44%, minimum 90% |
+| OpenCTI critical-path coverage | At least 95% combined; every critical module at least 90% |
+| Synthetic benchmark | 100 deterministic mutations, zero mismatches |
+| Schema integrity | 57 files; exact commit and aggregate digest below |
+| API health | HTTP 200 and version `0.2.0b1` |
+| CLI | Help and five-verdict non-network demo pass |
+| Distribution | Build, Twine, isolated install, resources and inventory pass outside checkout |
 
-- Distribution: `cti-ai-trust-gateway`
-- Import package: `cti_trust_gateway`
-- Current version: `0.1.0b2` in `pyproject.toml`, `cti_trust_gateway.__version__`, FastAPI metadata, health
-  response, tests, Docker image label in CI, changelog, citation metadata, and release notes.
-- Python requirement: `>=3.12,<3.14`, with classifiers for 3.12 and 3.13.
-- Console entry point: `cti-trust = cti_trust_gateway.cli.main:app`.
-- License: Apache-2.0 with `LICENSE`, `THIRD_PARTY_NOTICES.md`, OASIS schema provenance, and MITRE
-  attribution.
-- Repository URL: `https://github.com/ag2020sa/cti-ai-trust-gateway`.
+Python 3.12 and Docker were unavailable locally and are mandatory GitHub Actions gates. CI retains
+Python 3.12 and 3.13 quality matrices, isolated package verification, Docker build and live health,
+Ruff, strict mypy, Bandit, pip-audit, adversarial tests, full branch coverage, per-critical-path
+coverage, schema/resource verification, and the synthetic benchmark.
 
-## Historical `v0.1.0b1` distribution and installed-wheel evidence
+## Schema, profile, and compatibility provenance
 
-Before `v0.1.0b1` publication, the previous `dist/` directory was verified as an exact child of the
-repository and removed. That clean historical build produced exactly:
+- Exactly 57 immutable OASIS STIX schema files are packaged.
+- Upstream schema commit:
+  `c4f8d589acf2bdb3783655c89e0ffb6e150006ae`.
+- Aggregate schema SHA-256:
+  `43c2bf45bbaeeb44e5852553abffdebeaaa1584111d92d8a8d3a3101d8bd220f`.
+- OpenCTI compatibility profile: `opencti-7.260715.0`, independently implemented from pinned
+  public interface information.
+- The 19 original English/Arabic/mixed OpenCTI contract fixtures are test-only and excluded from
+  the wheel.
+- No copied proprietary Ariane or OpenCTI Enterprise code or fixture is included.
 
-- `dist/cti_ai_trust_gateway-0.1.0b1.tar.gz`
-- `dist/cti_ai_trust_gateway-0.1.0b1-py3-none-any.whl`
+`THIRD_PARTY_NOTICES.md` records exact public upstream references, licenses, attribution, and the
+boundary between OASIS schemas and independently authored OpenCTI compatibility data.
 
-`python -m build` and `python -m twine check dist/*` passed. The wheel contains 99 entries,
-including 57 schema JSON files and both bundled YAML policies. Metadata reports version `0.1.0b1`
-and Python `>=3.12,<3.14`.
+## Package and repository hygiene
 
-A fresh Python 3.13 environment installed the wheel—not an editable checkout—and executed from an
-operating-system temporary directory. Evidence:
+Release distributions are built in a unique temporary directory outside the repository. The wheel
+must contain package code, 57 schemas, the pinned OpenCTI profile, policy files, web resources,
+license, and third-party notices. It must not contain test-only OpenCTI fixtures, databases, `.env`,
+coverage, caches, Git state, workstation paths, temporary data, or existing release artifacts.
 
-- import path resolved under the fresh environment's `site-packages`;
-- installed metadata and `__version__` both reported `0.1.0b1`;
-- `cti-trust --help` exposed `verify`, `show`, `export`, and `demo`;
-- `cti-trust demo` returned PASS, REJECT, QUARANTINE, ABSTAIN, and REVIEW;
-- FastAPI application import and version assertion passed;
-- bundled `default.yml` and `abstain.yml` loaded without the source tree;
-- schema count, commit, and aggregate digest matched;
-- valid exact evidence produced PASS with validation status EXECUTED;
-- invalid STIX and a missing schema directory produced no PASS and no exported objects.
+The source distribution may contain the documented tests and original synthetic fixtures. Both
+archives must pass Twine, inventory, private-path, secret-pattern, and extracted-content checks.
+The isolated wheel verifier must validate installed metadata/version, schema/profile/notices,
+invalid-schema fail-closed behavior, CLI help, the five-verdict demo, and API health outside the
+checkout.
 
-## Schema and fail-closed evidence
+## Security and privacy review
 
-- Schema source: bundled OASIS STIX 2.1 schema tree.
-- Pinned commit: `c4f8d589acf2bdb3783655c89e0ffb6e150006ae`.
-- Aggregate SHA-256: `43c2bf45bbaeeb44e5852553abffdebeaaa1584111d92d8a8d3a3101d8bd220f`.
-- Packaged schema JSON count: 57.
-- PASS path: validation status EXECUTED, exact commit and digest recorded.
-- Invalid STIX path: not PASS; export empty.
-- Missing schema path: validation status UNAVAILABLE, not PASS; export empty.
-- Existing adversarial tests cover missing, corrupted, failed, skipped, and bypass-attempt states;
-  none can yield PASS.
+`gitleaks` is not installed on this host, so no gitleaks-pass claim is made. The established audited
+fallback scan checks tracked release content and extracted artifacts for private-key blocks,
+common cloud/GitHub/OpenAI/Slack credentials, long Bearer values, private workstation paths,
+private network addresses, internal domains, and non-authorized email addresses. This scan is a
+documented fallback, not proof against every secret format.
 
-## Reproduced quality and security gates
+`.env.example` contains only safe placeholders. Runtime secrets are environment-only and excluded
+from serialization and logs. Git commit metadata uses
+`172840487+ag2020sa@users.noreply.github.com` without changing global Git configuration.
 
-| Gate | Result |
-|---|---|
-| Ruff format | PASS, 48 files checked |
-| Ruff lint | PASS |
-| strict mypy | PASS, 28 source files |
-| Bandit | PASS |
-| Full pytest | PASS, 122 tests |
-| Branch-aware coverage | PASS, 87.82% against 80% minimum |
-| Independent adversarial directory | PASS, 87 tests |
-| Synthetic benchmark | PASS, 100 mutations, zero mismatches |
-| Distribution build | PASS, sdist and wheel |
-| Twine metadata/readme check | PASS, both artifacts |
-| Fresh installed-wheel verification | PASS on Python 3.13.5 |
-| `pip-audit --local` | PASS, no known dependency vulnerabilities; local unpublished project skipped |
-| Historical `v0.1.0b1` API health endpoint | PASS, HTTP 200 with `0.1.0b1` |
-| API upload/analyze/review/export integration | PASS |
+The delivery transport requires verified TLS, an exact host-and-port allowlist, direct connections
+without inherited proxies, blocked redirects, all-answer DNS validation, SSRF controls, bounded
+responses, token redaction, explicit reconciliation, and conservative no-retry handling.
 
-The adversarial directory passed once on its own and again inside the full suite. Tests use isolated
-temporary databases and fixtures; no suite outcome relies on the independently executed run.
-External LLM access was disabled, normal validation used packaged local schemas, and the test suite
-made no live model/schema/data calls. Network-denial and provider-failure adversarial cases enforce
-the offline boundary. Package installation, isolated build dependency installation, and the
-vulnerability database query were the only intentional tool-network operations.
+## Workflow and publication controls
 
-### Export invariants reproduced
+The workflow keeps `permissions: contents: read`, uses full-SHA-pinned actions, has no
+`pull_request_target`, tests Python 3.12 and 3.13, and preserves package and Docker health gates.
+The full branch-coverage floor is 90%, combined critical-path floor is 95%, and every critical
+module/path must remain at least 90%.
 
-- REJECT exports no candidate objects.
-- QUARANTINE exports no candidate objects.
-- Structurally invalid STIX exports no candidate objects.
-- Missing or unavailable mandatory schema capability exports no candidate objects.
-- A PASS exact observable preserves its original value in export.
-- Review rejection removes the object from a previously eligible PASS export.
-- Hard-rejected findings and cases cannot be accepted through review; edits require full re-analysis.
+Publication must follow this order:
 
-## Secrets and privacy scan
+1. Commit the reviewed Phase 1 and release-preparation diff on
+   `feature/opencti-approved-delivery` with the public noreply identity.
+2. Push normally, open the reviewable pull request, and require all checks.
+3. Squash merge through protected `main`; never push directly or bypass protection.
+4. Verify final `main` CI and rebuild from the exact clean merge commit outside the checkout.
+5. Create annotated tag `v0.2.0b1`, publish a GitHub prerelease, and attach only the verified wheel,
+   source distribution, and `SHA256SUMS.txt`.
+6. Verify anonymous public downloads and checksums, tag/merge history, release metadata, clean
+   local state, and feature-branch cleanup.
 
-`gitleaks` is not installed on this host, so no gitleaks result is claimed. A repository-content
-pattern scan excluding ignored generated state and vendored schema JSON checked for common private
-key headers, AWS/GitHub/OpenAI/Slack token signatures, private absolute user paths, email addresses,
-private IPv4 ranges, and internal/local domains. It returned no matches. `.env.example` was manually
-checked and contains no value for the optional model API key.
+No Dependabot interaction, old-release mutation, PyPI upload, container-registry publication,
+force push, protection bypass, or live OpenCTI contact is authorized.
 
-This pattern scan is a documented fallback, not proof that every possible secret format is absent.
-Repository security features should remain enabled where GitHub makes them available.
+## Limitations
 
-## Python and Docker compatibility
+- No real or disposable OpenCTI instance was contacted; no live interoperability claim is made.
+- The project has no authentication, RBAC, CSRF protection, malware sandbox, parser-process
+  isolation, rate limiting, production monitoring, signed audit retention, or automatic cleanup.
+- Do not use production credentials, sensitive reports, private indicators, or customer data.
+- OpenCTI compatibility pins will age and require independent revalidation.
+- This research beta is not a compliance certification.
 
-- Python 3.13.5: **VERIFIED locally** through quality, coverage, benchmark, API/CLI, build, and fresh
-  wheel-install checks, and **VERIFIED in CI**.
-- Python 3.12: **VERIFIED in CI**; no 3.12 interpreter is installed on this host.
-- Dockerfile/Compose: **STATIC PASS** for a slim 3.12 image, non-root user, loopback-published Compose
-  port, dropped capabilities, no-new-privileges, isolated runtime volume, and healthcheck.
-- Docker build/runtime: **VERIFIED in CI** through an image build and live healthcheck; no Docker
-  CLI/daemon is installed on this host.
+**OpenCTI and STIX names are used solely for compatibility identification; no endorsement is implied.**
+No endorsement by Filigran/OpenCTI or OASIS is implied.
 
-No unavailable runtime is described as passing.
-
-## CI and workflow security
-
-The workflow has mandatory jobs for Python 3.12 and 3.13 quality/coverage/adversarial tests, clean
-package build plus outside-checkout wheel installation, and Docker build plus actual healthcheck.
-It has read-only default contents permission, concurrency cancellation, external LLM disabled,
-full-length SHA-pinned official checkout/setup actions, no allowed failures, and explicit Ruff,
-mypy, Bandit, dependency-audit, coverage, and packaging gates. Dependabot covers pip, GitHub Actions,
-and Docker updates.
-
-The mandatory [GitHub Actions workflow](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/workflows/ci.yml)
-has exact jobs for Python 3.12 and 3.13 quality/tests, clean package build and outside-checkout
-installation, and Docker build/health. Checked-in documentation uses the stable workflow URL;
-hosted release notes record the exact final run for each prerelease.
-
-## Public documentation and community files
-
-The public-facing set includes `README.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, `SECURITY.md`,
-`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `CITATION.cff`, issue forms, a pull request
-template, Dependabot configuration, architecture/threat/evidence/policy docs, release notes, and
-this readiness record. The README states research-beta status, threat/assurance boundaries,
-install/run/API/CLI/demo steps, schema provenance, bilingual behavior, benchmark/data licensing,
-known limitations, screenshots, security warnings, and roadmap.
-
-## Corrective release controls
-
-1. Observe the complete workflow green on the final `main` commit.
-2. Rebuild release artifacts on that exact commit and repeat the installed-wheel and archive scans.
-3. Create and verify a new annotated tag and GitHub prerelease with checksums.
-
-The historical `v0.1.0b1` tag and assets remain immutable. Package-index or container-registry
-publication, if ever desired, is a separate explicitly authorized action.
-
-## Publication sequence
-
-```text
-1. Merge the reviewed corrective pull request through the protected `main` branch.
-2. Observe all mandatory jobs green on the exact final `main` commit.
-3. Rebuild and verify release artifacts from that green commit.
-4. Create a new annotated tag and GitHub prerelease with checksums.
-5. Verify the public repository, tag, release assets, links, and reporting channel.
-6. Do not upload to a package index or container registry without separate explicit authorization.
-```
-
-## Final statement
-
-The tree is a coherent, installable, locally and remotely verified research beta and is **READY FOR
-A CORRECTIVE PUBLIC RESEARCH-BETA RELEASE** after the controls above pass. It is not production
-ready. `v0.1.0b2` changes attribution, documentation, version metadata, and repository governance;
-it does not change core gateway functionality.
+Historical release details remain in `docs/releases/v0.1.0b1.md` and
+`docs/releases/v0.1.0b2.md`.
