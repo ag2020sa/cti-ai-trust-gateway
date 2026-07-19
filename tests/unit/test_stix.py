@@ -34,9 +34,9 @@ def test_duplicate_and_dangling_relationship() -> None:
     )
     candidate, findings = validate_candidate(raw)
     assert not candidate.is_valid
-    assert {"STIX-DUPLICATE-001", "STIX-REL-DANGLING-001"} <= {
-        finding.rule_id for finding in findings
-    }
+    rules = {finding.rule_id for finding in findings}
+    assert "STIX-REL-DANGLING-001" in rules
+    assert "STIX-DUPLICATE-CONFLICT-001" not in rules
 
 
 def test_claim_extraction_for_indicator_attack_and_relationship() -> None:

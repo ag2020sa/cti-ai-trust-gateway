@@ -1,0 +1,159 @@
+metadata:
+  id: opencti-7.260715.0
+  schema_version: "1.0"
+  vendor: OpenCTI-Platform
+  product: OpenCTI
+  platform_version: 7.260715.0
+  pycti_version: 7.260715.0
+  opencti_commit: 148ceb414d1338d7c10ff79f0302d0a03dae332f
+  connectors_commit: b70a94b526574a040953cba73b3c76ec3ead6f21
+  opencti_repository: https://github.com/OpenCTI-Platform/opencti
+  connectors_repository: https://github.com/OpenCTI-Platform/connectors
+  reviewed_on: "2026-07-18"
+  disclaimer: Contract-tested against pinned public interfaces; not live-certified or production-ready.
+  profile_sha256: d3bb230c922ec7fbbc7cc4c915382ac6717de91e59821c8d8215c069979dce3f
+limits:
+  max_objects: 1000
+  max_bytes: 5242880
+  max_dependency_depth: 32
+common_properties:
+  - type
+  - spec_version
+  - id
+  - created_by_ref
+  - created
+  - modified
+  - revoked
+  - labels
+  - confidence
+  - lang
+  - external_references
+  - object_marking_refs
+  - granular_markings
+  - extensions
+observable_common_properties:
+  - defanged
+types:
+  attack-pattern:
+    properties: [name, description, aliases, kill_chain_phases, x_mitre_id]
+  identity:
+    properties: [name, description, roles, identity_class, sectors, contact_information]
+  location:
+    properties: [name, description, latitude, longitude, precision, region, country, administrative_area, city, street_address, postal_code, x_opencti_location_type]
+  intrusion-set:
+    properties: [name, description, aliases, first_seen, last_seen, goals, resource_level, primary_motivation, secondary_motivations]
+  malware:
+    properties: [name, description, aliases, malware_types, is_family, first_seen, last_seen, architecture_execution_envs, implementation_languages, capabilities, kill_chain_phases]
+  vulnerability:
+    properties: [name, description]
+  tool:
+    properties: [name, description, aliases, tool_types, tool_version, kill_chain_phases]
+  channel:
+    properties: [name, description, channel_types]
+  report:
+    properties: [name, description, report_types, published, object_refs]
+  marking-definition:
+    control_only: true
+    properties: [definition_type, definition, name]
+  extension-definition:
+    control_only: true
+    properties: [name, description, schema, version, extension_types, extension_properties]
+  relationship:
+    properties: [relationship_type, description, source_ref, target_ref, start_time, stop_time]
+  autonomous-system:
+    properties: [number, name, rir]
+  domain-name:
+    properties: [value, resolves_to_refs]
+  email-addr:
+    properties: [value, display_name, belongs_to_ref]
+  file:
+    properties: [hashes, size, name, name_enc, magic_number, mime_type, ctime, mtime, atime, parent_directory_ref, contains_refs, content_ref]
+  ipv4-addr:
+    properties: [value, resolves_to_refs, belongs_to_refs]
+  ipv6-addr:
+    properties: [value, resolves_to_refs, belongs_to_refs]
+  mac-addr:
+    properties: [value]
+  url:
+    properties: [value]
+  windows-registry-key:
+    properties: [key, values, modified, creator_user_ref, number_of_subkeys]
+relationships:
+  uses:
+    - attack-pattern|malware
+    - malware|attack-pattern
+    - intrusion-set|malware
+    - intrusion-set|attack-pattern
+    - channel|malware
+    - channel|intrusion-set
+    - channel|attack-pattern
+  targets:
+    - attack-pattern|location:country
+    - attack-pattern|location:region
+    - attack-pattern|identity:individual
+    - attack-pattern|identity:organization
+    - attack-pattern|identity:sector
+    - attack-pattern|vulnerability
+    - channel|location:country
+    - channel|location:region
+    - channel|identity:individual
+    - channel|identity:organization
+    - channel|identity:sector
+    - channel|vulnerability
+    - malware|identity:organization
+    - malware|location:country
+    - malware|location:region
+    - malware|identity:sector
+    - malware|identity:individual
+    - intrusion-set|identity:organization
+    - intrusion-set|location:country
+    - intrusion-set|location:region
+    - intrusion-set|identity:sector
+    - intrusion-set|identity:individual
+    - intrusion-set|vulnerability
+  exploits:
+    - malware|vulnerability
+  originates-from:
+    - intrusion-set|location:country
+    - intrusion-set|location:region
+    - malware|location:country
+    - malware|location:region
+  located-at:
+    - identity:sector|location:country
+    - identity:sector|location:region
+    - identity:individual|location:country
+    - identity:individual|location:region
+    - identity:organization|location:country
+    - identity:organization|location:region
+    - ipv4-addr|location:country
+    - ipv4-addr|location:region
+    - ipv6-addr|location:country
+    - ipv6-addr|location:region
+  related-to:
+    - intrusion-set|intrusion-set
+    - intrusion-set|malware
+    - intrusion-set|tool
+    - malware|malware
+    - malware|tool
+    - tool|tool
+    - identity|identity
+    - identity|location
+    - channel|identity
+    - channel|intrusion-set
+    - domain-name|ipv4-addr
+    - domain-name|ipv6-addr
+    - url|domain-name
+    - file|malware
+custom_types:
+  channel:
+    extension_definition_id: extension-definition--be4ebfff-c203-4698-8853-4797fa138ec7
+    created_by_ref: identity--32207a20-5ece-40d2-b7a7-c5c207a12244
+    name: Channel
+    version: 1.0.0
+    extension_type: new-sdo
+    extension_properties: [name, description, aliases, channel_types]
+allowed_extension_definitions:
+  - extension-definition--be4ebfff-c203-4698-8853-4797fa138ec7
+tlp_red_ids:
+  - marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed
+  - marking-definition--e828b379-4e03-4974-9ac4-e53a884c97c1

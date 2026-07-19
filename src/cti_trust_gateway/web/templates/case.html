@@ -30,6 +30,28 @@
       No source-verified STIX objects are available for export.
     </p>
     {% endif %}
+    <section class="card opencti-readiness">
+      <h2>OpenCTI Draft readiness</h2>
+      <p><span class="badge {{ 'pass' if opencti_ready else 'review' }}">{{ 'READY' if opencti_ready else 'BLOCKED' }}</span>
+        Pinned profile: <code>{{ opencti_profile_id }}</code></p>
+      <p>Profile SHA-256: <code>{{ opencti_profile_sha256 }}</code></p>
+      <ul>
+        {% for gate, passed in opencti_gates.items() if gate != 'reasons' %}
+        <li><code>{{ gate|upper }}</code>: <strong>{{ 'PASS' if passed else 'BLOCKED' }}</strong></li>
+        {% endfor %}
+      </ul>
+      <p>Included objects: <strong>{{ opencti_included_count }}</strong> · Excluded objects:
+        <strong>{{ opencti_excluded_count }}</strong></p>
+      {% if opencti_artifact_sha256 %}<p>Artifact SHA-256:
+        <code>{{ opencti_artifact_sha256 }}</code></p>{% endif %}
+      {% if opencti_blockers %}
+      <ul>{% for blocker in opencti_blockers %}<li><code>{{ blocker }}</code></li>{% endfor %}</ul>
+      {% else %}
+      <p>The persisted snapshot can produce an approved-only immutable artifact and offline delivery plan.</p>
+      {% endif %}
+      <aside class="warning">Live OpenCTI delivery is CLI-only in this unauthenticated research beta.</aside>
+      <code>cti-trust opencti plan {{ case.id }}</code>
+    </section>
     <div class="split">
       <section class="card">
         <h2>Original document</h2>

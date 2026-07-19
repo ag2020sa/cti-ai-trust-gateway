@@ -6,7 +6,14 @@
 
 > They generate intelligence. We verify it before it becomes operational.
 
-**Research MVP / Beta (`0.1.0b2`) — local evaluation only, not production ready.**
+**Research MVP / Beta (`0.2.0b1`) — local evaluation only, not production ready.**
+
+> **OpenCTI Draft delivery is EXPERIMENTAL, disabled by default, contract-tested, and not live-verified.**
+
+This prerelease adds the audited OpenCTI Phase 1 path. Live delivery remains CLI-only and requires
+three explicit opt-ins; API and UI routes cannot initiate it. Read the
+[`v0.2.0b1` release notes](docs/releases/v0.2.0b1.md) and
+[OpenCTI Phase 1 guide](docs/opencti-phase1.md) before evaluation.
 
 Repository: [github.com/ag2020sa/cti-ai-trust-gateway](https://github.com/ag2020sa/cti-ai-trust-gateway)
 
@@ -14,7 +21,8 @@ AI extraction can turn a report into polished STIX while silently changing an IP
 actor, overstating confidence, or treating two names on the same page as a proven relationship.
 This local-first gateway sits between that producer and OpenCTI, MISP, a SIEM, or an EDR. It binds
 candidate claims to the supplied source, applies a transparent policy, asks an analyst where
-evidence is insufficient, and exports only approved objects.
+evidence is insufficient, exports only approved objects, and can stage that exact approved graph
+in an isolated OpenCTI Draft for a second manual review.
 
 For example, a report says exploitation of CVE-2026-1234 is possible, the actor is unknown, and
 the observed IP is `203.0.113.53`. An AI bundle says APT28 exploited it from `203.0.113.58` with
@@ -34,6 +42,9 @@ inflation, and excludes rejected STIX from export.
 - Serves a responsive, dependency-free analyst UI and versioned API; records eligible accept/reject
   decisions in a hash-chained audit history and rejects in-place edits that bypass re-analysis.
 - Exports verified STIX plus `findings.json`, `evidence-manifest.json`, and `audit.json`.
+- Checks an approved graph against an integrity-pinned OpenCTI `7.260715.0` profile, creates an
+  offline delivery plan, and requires explicit CLI confirmation before sending exact canonical
+  bytes to an OpenCTI Draft workspace.
 
 It is not a threat platform, feed, chatbot, blocking system, analyst replacement, compliance
 certification, perfect prompt-injection detector, or model-training project. A verdict means
@@ -65,6 +76,10 @@ flowchart LR
   F --> G[YAML policy]
   G --> H[Analyst review and hash-chained audit]
   H --> I[Approved STIX and evidence manifest]
+  I --> J[Pinned OpenCTI compatibility check]
+  J --> K[Offline plan and exact artifact hash]
+  K --> L[Explicit CLI delivery to OpenCTI Draft]
+  L --> M[Separate OpenCTI analyst approval]
 ```
 
 The default semantic provider is deterministic and never uses the network. Exact IOCs can pass.
@@ -101,15 +116,15 @@ Open <http://127.0.0.1:8000>. The UI is deliberately local/demo-only and has no 
 
 ## Install the verified GitHub release
 
-Download the wheel and checksum manifest from the `v0.1.0b2` GitHub prerelease, verify them, then
+Download the wheel and checksum manifest from the `v0.2.0b1` GitHub prerelease, verify them, then
 install the wheel. No package has been published to PyPI.
 
 ```bash
-curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/cti_ai_trust_gateway-0.1.0b2-py3-none-any.whl
-curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/cti_ai_trust_gateway-0.1.0b2.tar.gz
-curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.1.0b2/SHA256SUMS.txt
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.2.0b1/cti_ai_trust_gateway-0.2.0b1-py3-none-any.whl
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.2.0b1/cti_ai_trust_gateway-0.2.0b1.tar.gz
+curl -fLO https://github.com/ag2020sa/cti-ai-trust-gateway/releases/download/v0.2.0b1/SHA256SUMS.txt
 sha256sum --check SHA256SUMS.txt
-python -m pip install ./cti_ai_trust_gateway-0.1.0b2-py3-none-any.whl
+python -m pip install ./cti_ai_trust_gateway-0.2.0b1-py3-none-any.whl
 cti-trust demo
 ```
 
@@ -145,10 +160,42 @@ cti-trust verify report.txt candidate.json --policy policies/default.yml
 cti-trust show CASE_ID
 cti-trust export CASE_ID --format stix
 cti-trust demo
+cti-trust opencti check CASE_ID
+cti-trust opencti plan CASE_ID
 ```
 
 `verify` prints the final verdict, finding counts, unsupported-claim count, evidence coverage, and
 absolute artifact paths under the ignored `data/runtime/exports` directory.
+
+## OpenCTI Draft delivery
+
+Phase 1 protects the handoff between a verified local case and OpenCTI. It prevents a caller from
+bypassing validation, evidence, policy, approval, compatibility, destination, and artifact-integrity
+gates. Planning is offline and persisted; live delivery is disabled by default and is CLI-only
+because the research UI/API has no authentication.
+
+```bash
+# Network-free assessment and deterministic plan
+cti-trust opencti check CASE_ID
+cti-trust opencti plan CASE_ID --output plan.json
+
+# Explicit network operations
+cti-trust opencti probe
+cti-trust opencti deliver PLAN_ID --execute \
+  --confirm-plan-sha256 FULL_64_CHARACTER_PLAN_SHA256
+
+# Local inspection and explicit recovery after an ambiguous submission
+cti-trust opencti status PLAN_ID
+cti-trust opencti history --case-id CASE_ID
+cti-trust opencti reconcile ATTEMPT_ID
+```
+
+`deliver` without `--execute` is a dry run. Delivery creates and imports into a Draft; OpenCTI
+manual approval remains mandatory. Ambiguous or partial submissions block blind retry and require
+reconciliation. This is local duplicate suppression, not an atomic or exactly-once guarantee.
+Configuration is environment-only; copy the safe defaults from `.env.example`. The full contract,
+pins, variables, state model, security controls, and limitations are in
+[OpenCTI Phase 1](docs/opencti-phase1.md).
 
 ## API
 
@@ -160,11 +207,16 @@ curl -s -X POST http://127.0.0.1:8000/api/v1/cases \
   -F tlp=TLP:CLEAR
 curl -s http://127.0.0.1:8000/api/v1/cases/CASE_ID/manifest
 curl -s http://127.0.0.1:8000/api/v1/cases/CASE_ID/export/stix
+curl -s -X POST http://127.0.0.1:8000/api/v1/opencti/plans/CASE_ID
+curl -s http://127.0.0.1:8000/api/v1/opencti/plans/PLAN_ID/history
 ```
 
 Review actions accept JSON such as the reject decision below. `accept` requires an object ID and
 non-empty rationale and is limited to eligible REVIEW/ABSTAIN objects. `edit` is intentionally
 rejected: hard findings require a corrected candidate and complete re-analysis.
+
+The OpenCTI HTTP surface is deliberately limited to network-free plan creation and plan/history
+reads. There is no HTTP route for probing, delivery, or reconciliation.
 
 ```json
 {"finding_id":"finding--...","object_id":"indicator--...","action":"reject","comment":"Attribution is unsupported"}
@@ -242,11 +294,13 @@ finding-category mismatch.
 
 ## Verification status
 
-The release candidate currently has 122 local tests (including 87 tests under the independent
-adversarial directory), 87.82% branch-aware coverage from the release-candidate run, a
-100-mutation benchmark with zero mismatches, and passing Ruff, mypy, and Bandit checks on Python
-3.13. The exact release-candidate totals are reproduced in `RELEASE_READINESS.md`. The mandatory
-Python 3.12, Python 3.13, packaging, and Docker build/health jobs are verified in GitHub Actions.
+The audited Phase 1 release candidate has 224 tests, including 150 under the independent
+adversarial directory, 90.44% branch-aware total coverage, and at least 95% combined OpenCTI
+critical-path coverage with every critical module above 94%. The 100-mutation benchmark has zero
+mismatches; Ruff, strict mypy, Bandit, pip-audit, build, Twine, and isolated-wheel verification pass
+on Python 3.13.5. Python 3.12 and Docker are mandatory GitHub Actions gates. See
+[`RELEASE_READINESS.md`](RELEASE_READINESS.md) and the independent
+[`HANDOFF_OPENCTI_PHASE1_AUDIT.md`](HANDOFF_OPENCTI_PHASE1_AUDIT.md).
 
 MITRE ATT&CK identifiers are used with attribution and without endorsement. CTIBench is not
 vendored because it is CC BY-NC-SA; evaluate it separately under its license. See
@@ -264,6 +318,11 @@ these in-process limits are not a CPU or memory sandbox.
 Do not expose this MVP publicly. Production requires authentication, authorization, malware
 scanning, sandboxed parser workers, rate limits, secure object storage, CSRF protection, encrypted
 storage, signed audit retention, monitoring, and controlled model egress. See [SECURITY.md](SECURITY.md).
+
+OpenCTI delivery additionally requires verified TLS, an exact host allowlist, validation of every
+DNS answer, private/loopback opt-in, blocked redirects and metadata/link-local targets, bounded
+responses, environment-only secrets, and no automatic submission retry. See
+[OpenCTI Phase 1](docs/opencti-phase1.md#network-and-secret-controls).
 
 ## Development
 
@@ -284,7 +343,7 @@ or exports. See [CONTRIBUTING.md](CONTRIBUTING.md).
 - Authenticate analysts and add role-based review queues.
 - Isolate PDF parsing in resource-constrained workers and add malware scanning.
 - Add signed, append-only external audit storage and organization policy packs.
-- Integrate OpenCTI/MISP through explicit approval queues and idempotent adapters.
+- Add an authenticated production OpenCTI approval queue and a separately scoped MISP adapter.
 - Add ATT&CK catalog pinning, richer bilingual contradiction checks, and calibrated semantic
   provider evaluations against separately licensed benchmarks.
 

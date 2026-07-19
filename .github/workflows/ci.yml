@@ -37,8 +37,27 @@ jobs:
         run: python -m pip_audit --local
       - name: Independent adversarial suite
         run: python -m pytest tests/adversarial -q
+      - name: OpenCTI critical-path branch coverage gate
+        run: >-
+          python -m pytest
+          tests/unit/test_opencti_compatibility.py
+          tests/unit/test_opencti_artifact.py
+          tests/unit/test_opencti_security.py
+          tests/adversarial/test_opencti_audit_hardening.py
+          tests/adversarial/test_opencti_delivery.py
+          tests/integration/test_opencti_interfaces.py
+          --cov=cti_trust_gateway.compatibility
+          --cov=cti_trust_gateway.core.canonical
+          --cov=cti_trust_gateway.core.snapshots
+          --cov=cti_trust_gateway.delivery
+          --cov=cti_trust_gateway.storage.repository
+          --cov-branch --cov-report=term
+          --cov-report=json:critical-coverage.json
+      - run: python scripts/check_critical_coverage.py critical-coverage.json
+      - name: Synthetic benchmark
+        run: python scripts/run_synthetic_benchmark.py
       - name: Full tests and branch coverage gate
-        run: python -m pytest --cov --cov-branch --cov-report=term --cov-fail-under=80
+        run: python -m pytest --cov --cov-branch --cov-report=term --cov-fail-under=90
 
   package:
     name: Build and verify distributions
@@ -52,7 +71,7 @@ jobs:
       - run: python -m pip install "build>=1.2,<2" "twine>=6,<7"
       - run: python -m build
       - run: python -m twine check dist/*
-      - name: Install wheel in an isolated environment and test outside source tree
+      - name: Install wheel and verify schemas and resources outside source tree
         shell: bash
         run: |
           wheel="$(realpath dist/*.whl)"
@@ -70,14 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - run: docker build --tag cti-ai-trust-gateway:0.1.0b2 .
+      - run: docker build --tag cti-ai-trust-gateway:0.2.0b1 .
       - name: Start container and verify health endpoint
         shell: bash
         run: |
           container="$(docker run --detach --name cti-gateway-ci \
             --publish 127.0.0.1:18000:8000 \
             --env CTI_GATEWAY_ENABLE_EXTERNAL_LLM=false \
-            cti-ai-trust-gateway:0.1.0b2)"
+            cti-ai-trust-gateway:0.2.0b1)"
           cleanup() { docker rm --force "$container" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
           for attempt in $(seq 1 30); do

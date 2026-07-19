@@ -8,15 +8,18 @@ from pathlib import Path
 from typing import Annotated, Any
 from uuid import uuid4
 
-from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
 from cti_trust_gateway import __version__
+from cti_trust_gateway.compatibility import load_opencti_profile
 from cti_trust_gateway.config import bundled_policy_path
 from cti_trust_gateway.core.service import GatewayService
+from cti_trust_gateway.delivery.config import OpenCTIConfig
+from cti_trust_gateway.delivery.service import OpenCTIDeliveryService
 from cti_trust_gateway.domain.models import ReviewDecision, Verdict
 from cti_trust_gateway.exporters.exporter import build_export
 from cti_trust_gateway.parsers.document import DocumentError
@@ -40,12 +43,12 @@ SOURCE_MEDIA_TYPES = {
 
 
 class ReviewRequest(BaseModel):
-    finding_id: str | None = None
-    object_id: str | None = None
+    finding_id: str | None = Field(default=None, max_length=120)
+    object_id: str | None = Field(default=None, max_length=120)
     action: str = Field(pattern="^(accept|edit|reject)$")
-    comment: str = ""
-    edited_value: str | None = None
-    analyst: str = "local-analyst"
+    comment: str = Field(default="", max_length=2000)
+    edited_value: str | None = Field(default=None, max_length=4000)
+    analyst: str = Field(default="local-analyst", min_length=1, max_length=120)
 
 
 def create_app(database_url: str | None = None) -> FastAPI:
@@ -54,6 +57,10 @@ def create_app(database_url: str | None = None) -> FastAPI:
     app = FastAPI(title="CTI AI Trust Gateway", version=__version__)
     app.state.repository = repository
     app.state.service = service
+
+    def opencti_delivery() -> OpenCTIDeliveryService:
+        return OpenCTIDeliveryService(repository, load_opencti_profile(), OpenCTIConfig.from_env())
+
     templates = Jinja2Templates(directory=str(WEB_DIR / "templates"))
     app.mount("/static", StaticFiles(directory=str(WEB_DIR / "static")), name="static")
 
@@ -126,8 +133,13 @@ def create_app(database_url: str | None = None) -> FastAPI:
         return case.model_dump(mode="json")
 
     @app.get("/api/v1/cases")
-    def list_cases() -> list[dict[str, Any]]:
-        return [case.model_dump(mode="json") for case in repository.list()]
+    def list_cases(
+        limit: Annotated[int, Query(ge=1, le=100)] = 50,
+        offset: Annotated[int, Query(ge=0, le=100_000)] = 0,
+    ) -> list[dict[str, Any]]:
+        return [
+            case.model_dump(mode="json") for case in repository.list(limit=limit, offset=offset)
+        ]
 
     @app.get("/api/v1/cases/{case_id}")
     def get_case(case_id: str) -> dict[str, Any]:
@@ -174,6 +186,47 @@ def create_app(database_url: str | None = None) -> FastAPI:
             raise HTTPException(404, "Case not found")
         return JSONResponse(build_export(case).bundle)
 
+    @app.post("/api/v1/opencti/plans/{case_id}", status_code=201)
+    def create_opencti_plan(case_id: str) -> dict[str, Any]:
+        """Offline plan creation only; this endpoint cannot deliver."""
+        try:
+            return opencti_delivery().create_plan(case_id).model_dump(mode="json")
+        except KeyError as exc:
+            raise HTTPException(404, "Case not found") from exc
+        except (RuntimeError, ValueError) as exc:
+            raise HTTPException(409, getattr(exc, "code", "OPENCTI_PLAN_BLOCKED")) from exc
+
+    @app.get("/api/v1/opencti/plans")
+    def list_opencti_plans(
+        case_id: str | None = None,
+        limit: Annotated[int, Query(ge=1, le=100)] = 50,
+        offset: Annotated[int, Query(ge=0, le=100_000)] = 0,
+    ) -> list[dict[str, Any]]:
+        return [
+            plan.model_dump(mode="json")
+            for plan in repository.list_delivery_plans(case_id, limit=limit, offset=offset)
+        ]
+
+    @app.get("/api/v1/opencti/plans/{plan_id}")
+    def get_opencti_plan(plan_id: str) -> dict[str, Any]:
+        plan = repository.get_delivery_plan(plan_id)
+        if plan is None:
+            raise HTTPException(404, "Plan not found")
+        return plan.model_dump(mode="json")
+
+    @app.get("/api/v1/opencti/plans/{plan_id}/history")
+    def get_opencti_history(
+        plan_id: str,
+        limit: Annotated[int, Query(ge=1, le=100)] = 50,
+        offset: Annotated[int, Query(ge=0, le=100_000)] = 0,
+    ) -> list[dict[str, Any]]:
+        if repository.get_delivery_plan(plan_id) is None:
+            raise HTTPException(404, "Plan not found")
+        return [
+            attempt.model_dump(mode="json")
+            for attempt in repository.list_delivery_attempts(plan_id, limit=limit, offset=offset)
+        ]
+
     @app.get("/", response_class=HTMLResponse)
     def index(request: Request) -> HTMLResponse:
         return templates.TemplateResponse(
@@ -187,6 +240,35 @@ def create_app(database_url: str | None = None) -> FastAPI:
             raise HTTPException(404, "Case not found")
         export_available = bool(build_export(case).bundle["objects"])
         export_blocked_by_policy = case.verdict in {Verdict.REJECT, Verdict.QUARANTINE}
+        try:
+            opencti_assessment = opencti_delivery().check(case_id)
+            opencti_ready = (
+                opencti_assessment.artifact is not None and not opencti_assessment.blockers
+            )
+            opencti_blockers = opencti_assessment.blockers
+            opencti_profile_id = opencti_assessment.compatibility.profile_id
+            opencti_profile_sha256 = opencti_assessment.compatibility.profile_sha256
+            opencti_gates = opencti_assessment.gates.model_dump(mode="json")
+            opencti_artifact_sha256 = (
+                opencti_assessment.artifact.artifact_sha256
+                if opencti_assessment.artifact is not None
+                else None
+            )
+            opencti_included_count = (
+                len(opencti_assessment.artifact.included_object_ids)
+                if opencti_assessment.artifact is not None
+                else 0
+            )
+            opencti_excluded_count = len(opencti_assessment.excluded_object_ids)
+        except (RuntimeError, ValueError):
+            opencti_ready = False
+            opencti_blockers = ("OPENCTI_PROFILE_UNAVAILABLE",)
+            opencti_profile_id = "unavailable"
+            opencti_profile_sha256 = "unavailable"
+            opencti_gates = {}
+            opencti_artifact_sha256 = None
+            opencti_included_count = 0
+            opencti_excluded_count = 0
         return templates.TemplateResponse(
             request=request,
             name="case.html",
@@ -194,6 +276,14 @@ def create_app(database_url: str | None = None) -> FastAPI:
                 "case": case,
                 "export_available": export_available,
                 "export_blocked_by_policy": export_blocked_by_policy,
+                "opencti_ready": opencti_ready,
+                "opencti_blockers": opencti_blockers,
+                "opencti_profile_id": opencti_profile_id,
+                "opencti_profile_sha256": opencti_profile_sha256,
+                "opencti_gates": opencti_gates,
+                "opencti_artifact_sha256": opencti_artifact_sha256,
+                "opencti_included_count": opencti_included_count,
+                "opencti_excluded_count": opencti_excluded_count,
             },
         )
 

@@ -9,8 +9,15 @@ from uuid import uuid4
 from cti_trust_gateway.domain.models import Claim
 
 PATTERN_VALUE_RE = re.compile(r"\[([^:]+):[^=]+\s*=\s*'((?:\\'|[^'])*)'\]")
-OBSERVABLE_TYPES = {"ipv4-addr", "ipv6-addr", "domain-name", "url"}
-ENTITY_TYPES = {"malware", "tool", "intrusion-set", "campaign"}
+VALUE_OBSERVABLE_TYPES = {
+    "domain-name",
+    "email-addr",
+    "ipv4-addr",
+    "ipv6-addr",
+    "mac-addr",
+    "url",
+}
+ENTITY_TYPES = {"malware", "tool", "intrusion-set", "campaign", "channel", "report"}
 
 
 def _claim(**kwargs: Any) -> Claim:
@@ -24,7 +31,7 @@ def extract_claims(bundle: dict[str, Any]) -> list[Claim]:
     for obj in objects:
         object_id = str(obj.get("id", ""))
         object_type = obj.get("type")
-        if object_type in OBSERVABLE_TYPES:
+        if object_type in VALUE_OBSERVABLE_TYPES:
             value = str(obj.get("value", ""))
             claims.append(
                 _claim(
@@ -46,6 +53,36 @@ def extract_claims(bundle: dict[str, Any]) -> list[Claim]:
                         object_ids=[object_id],
                     )
                 )
+            if obj.get("name"):
+                claims.append(
+                    _claim(
+                        kind="observable",
+                        statement=f"The source contains file name {obj['name']}.",
+                        value=str(obj["name"]),
+                        value_type="file-name",
+                        object_ids=[object_id],
+                    )
+                )
+        elif object_type == "autonomous-system":
+            claims.append(
+                _claim(
+                    kind="observable",
+                    statement=f"The source contains autonomous system {obj.get('number', '')}.",
+                    value=str(obj.get("number", "")),
+                    value_type="autonomous-system-number",
+                    object_ids=[object_id],
+                )
+            )
+        elif object_type == "windows-registry-key":
+            claims.append(
+                _claim(
+                    kind="observable",
+                    statement=f"The source contains registry key {obj.get('key', '')}.",
+                    value=str(obj.get("key", "")),
+                    value_type="windows-registry-key",
+                    object_ids=[object_id],
+                )
+            )
         elif object_type == "indicator":
             for observable_type, value in PATTERN_VALUE_RE.findall(str(obj.get("pattern", ""))):
                 claims.append(
@@ -97,6 +134,32 @@ def extract_claims(bundle: dict[str, Any]) -> list[Claim]:
                     object_ids=[object_id],
                 )
             )
+        elif object_type == "identity":
+            for property_name in ("name", "identity_class"):
+                value = str(obj.get(property_name, ""))
+                if value:
+                    claims.append(
+                        _claim(
+                            kind="entity",
+                            statement=f"The source identifies {property_name} {value}.",
+                            value=value,
+                            value_type=f"identity-{property_name.replace('_', '-')}",
+                            object_ids=[object_id],
+                        )
+                    )
+        elif object_type == "location":
+            for property_name in ("name", "region", "country", "administrative_area", "city"):
+                value = str(obj.get(property_name, ""))
+                if value:
+                    claims.append(
+                        _claim(
+                            kind="entity",
+                            statement=f"The source identifies location {property_name} {value}.",
+                            value=value,
+                            value_type=f"location-{property_name.replace('_', '-')}",
+                            object_ids=[object_id],
+                        )
+                    )
         elif object_type in ENTITY_TYPES:
             name = str(obj.get("name", ""))
             claims.append(

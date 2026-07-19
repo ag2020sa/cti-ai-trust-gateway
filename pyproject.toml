@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cti-ai-trust-gateway"
-version = "0.1.0b2"
+version = "0.2.0b1"
 description = "Vendor-neutral verification gateway for AI-generated cyber threat intelligence: evidence grounding, STIX 2.1 validation, policy enforcement, and human review"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -64,6 +64,9 @@ Security = "https://github.com/ag2020sa/cti-ai-trust-gateway/security/policy"
 [tool.hatch.build.targets.wheel]
 packages = ["src/cti_trust_gateway"]
 
+[tool.hatch.build.targets.wheel.shared-data]
+"THIRD_PARTY_NOTICES.md" = "share/doc/cti-ai-trust-gateway/THIRD_PARTY_NOTICES.md"
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
@@ -97,4 +100,4 @@ omit = ["*/web/*"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 80
+fail_under = 90

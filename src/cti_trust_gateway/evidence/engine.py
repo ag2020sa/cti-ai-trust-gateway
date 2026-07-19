@@ -49,15 +49,12 @@ def _span(
     end: int,
     match_type: Literal["exact", "case_insensitive", "normalized", "fuzzy", "near_match"],
 ) -> EvidenceSpan:
-    radius = 80
-    snippet_start = max(0, start - radius)
-    snippet_end = min(len(document.text), end + radius)
     return EvidenceSpan(
         document_id=document.id,
         page=_page(document, start),
         start=start,
         end=end,
-        text=document.text[snippet_start:snippet_end],
+        text=document.text[start:end],
         match_type=match_type,
     )
 
@@ -374,6 +371,16 @@ def validate_observable(value: str, value_type: str | None = None) -> bool:
         except ValueError:
             return False
         return parsed.version == (4 if value_type == "ipv4-addr" else 6)
+    if value_type == "autonomous-system-number":
+        return value.isdigit() and 0 <= int(value) <= 4_294_967_295
+    if value_type == "email-addr":
+        return bool(re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", value))
+    if value_type == "mac-addr":
+        return bool(re.fullmatch(r"(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}", value))
+    if value_type == "windows-registry-key":
+        return bool(value and "\x00" not in value)
+    if value_type == "file-name":
+        return bool(value and "\x00" not in value and len(value) <= 255)
     try:
         ipaddress.ip_address(value)
         return True

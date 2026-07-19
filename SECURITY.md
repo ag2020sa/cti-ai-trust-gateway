@@ -4,8 +4,9 @@
 
 | Version | Support status |
 |---|---|
-| `0.1.0b2` | Research-beta security reports accepted on a best-effort basis |
-| `0.1.0b1` | Superseded by `0.1.0b2`; use the corrective release for new downloads |
+| `0.2.0b1` | Research-beta security reports accepted on a best-effort basis |
+| `0.1.0b2` | Superseded by `0.2.0b1`; use the current research prerelease for new downloads |
+| `0.1.0b1` | Superseded by `0.1.0b2` |
 | Earlier snapshots | Unsupported |
 
 This project is a research MVP and is **not approved for production deployment or public network
