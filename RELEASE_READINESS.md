@@ -1,16 +1,16 @@
-# Release readiness: 0.2.0b1
+# Post-publication verification record: 0.2.0b1
 
-Prepared on 2026-07-19 for the staged GitHub prerelease
+Prepared on 2026-07-19 and finalized after publication of the GitHub prerelease
 `v0.2.0b1 — OpenCTI Draft Delivery Research Beta`.
 
 ## Decision
 
-**READY FOR PULL-REQUEST AND MANDATORY CI VALIDATION; not yet tagged and not production-ready.**
+**PUBLISHED RESEARCH PRERELEASE; independently reverified and not production-ready.**
 
 The audited OpenCTI Phase 1 implementation and release metadata pass the complete local source,
 security, adversarial, coverage, schema, benchmark, package, installed-wheel, CLI, and API gates.
-Publication remains conditional on all required pull-request and final `main` GitHub Actions checks,
-exact-clean-commit artifact reproduction, and public anonymous download verification.
+The pull-request, final-`main`, and tag GitHub Actions checks passed. Exact-clean-commit artifacts,
+public release metadata, and anonymous downloads were verified after publication.
 
 > **OpenCTI Draft delivery is EXPERIMENTAL, disabled by default, contract-tested, and not live-verified.**
 
@@ -28,16 +28,28 @@ automatic live-graph promotion, blind retry, atomic cross-system transaction, or
 guarantee. Ambiguous outcomes remain `UNKNOWN` or `PARTIAL` until explicit status-only
 reconciliation.
 
-## Version and immutable history
+## Version and publication record
 
 - Active package, API, CLI resource verifier, citation, test, and container-test version:
   `0.2.0b1`.
-- Planned annotated tag: `v0.2.0b1` on the exact clean squash-merge commit.
+- Pull request: [#8](https://github.com/ag2020sa/cti-ai-trust-gateway/pull/8).
+- Feature commit: `c5d9e65b15611639d4d5e1c8a7b6e951df91a2bb`.
+- Squash/main and release target commit: `cc22d2ea0eabf2eeff041f8b3c2c4b4e61731ac7`.
+- Annotated tag object: `b4a88a8bc169a45d318304c6eed5c160a4f88985`.
+- GitHub Release ID: `356229510`; `draft=false`, `prerelease=true`, `immutable=false`.
 - `v0.1.0b1` and `v0.1.0b2`, their annotations, release notes, checksums, and public assets remain
-  immutable historical releases.
-- No package-index or container-registry publication is planned.
+  unchanged historical releases.
+- No package-index or container-registry publication occurred.
 - A future `v0.2.0b2` is reserved for work following an isolated live OpenCTI Draft test; no stable
   release commitment exists.
+
+Public release assets were downloaded anonymously and matched these SHA-256 values:
+
+| Asset | Size (bytes) | SHA-256 |
+| --- | ---: | --- |
+| `cti_ai_trust_gateway-0.2.0b1-py3-none-any.whl` | 165340 | `8eab71b67f09a8dc60fda94e6b0019c51226d57daba8e03f38dc939015d3f304` |
+| `cti_ai_trust_gateway-0.2.0b1.tar.gz` | 355159 | `42ae70ee577efa3b29e9a2ad1c33f79b5b8d60b5d7acfde1b60c2768682c733a` |
+| `SHA256SUMS.txt` | 214 | `3dd11ed4db1acb50fd27bfbb000efb0e8a84ff913776ff0c882bc8b997219de8` |
 
 ## Local verification record
 
@@ -52,17 +64,26 @@ Reproduced on Windows with Python 3.13.5:
 | Full suite | 224 passed |
 | Independent adversarial suite | 150 passed |
 | Overall branch-aware coverage | 90.44%, minimum 90% |
-| OpenCTI critical-path coverage | At least 95% combined; every critical module at least 90% |
+| OpenCTI critical-path coverage | 95.95% combined; lowest critical module/path 94.17% |
 | Synthetic benchmark | 100 deterministic mutations, zero mismatches |
 | Schema integrity | 57 files; exact commit and aggregate digest below |
 | API health | HTTP 200 and version `0.2.0b1` |
 | CLI | Help and five-verdict non-network demo pass |
 | Distribution | Build, Twine, isolated install, resources and inventory pass outside checkout |
 
-Python 3.12 and Docker were unavailable locally and are mandatory GitHub Actions gates. CI retains
-Python 3.12 and 3.13 quality matrices, isolated package verification, Docker build and live health,
-Ruff, strict mypy, Bandit, pip-audit, adversarial tests, full branch coverage, per-critical-path
-coverage, schema/resource verification, and the synthetic benchmark.
+Python 3.12 and Docker were unavailable locally and were therefore mandatory GitHub Actions gates.
+All four required jobs succeeded in each recorded run:
+
+| CI context | Run | Commit | Conclusion |
+| --- | --- | --- | --- |
+| Pull request #8 | [29667718944](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29667718944) | `c5d9e65b15611639d4d5e1c8a7b6e951df91a2bb` | success |
+| Final `main` | [29667840318](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29667840318) | `cc22d2ea0eabf2eeff041f8b3c2c4b4e61731ac7` | success |
+| Annotated tag | [29668179792](https://github.com/ag2020sa/cti-ai-trust-gateway/actions/runs/29668179792) | `cc22d2ea0eabf2eeff041f8b3c2c4b4e61731ac7` | success |
+
+The jobs cover Python 3.12 and 3.13 quality/tests, isolated distribution build and verification,
+and Docker build and live health. They retain Ruff, strict mypy, Bandit, pip-audit, adversarial
+tests, full branch coverage, per-critical-path coverage, schema/resource verification, and the
+synthetic benchmark.
 
 ## Schema, profile, and compatibility provenance
 
@@ -102,8 +123,10 @@ private network addresses, internal domains, and non-authorized email addresses.
 documented fallback, not proof against every secret format.
 
 `.env.example` contains only safe placeholders. Runtime secrets are environment-only and excluded
-from serialization and logs. Git commit metadata uses
-`172840487+ag2020sa@users.noreply.github.com` without changing global Git configuration.
+from serialization and logs. The feature commit and annotated tag used
+`172840487+ag2020sa@users.noreply.github.com`. GitHub's final squash commit records
+`ag2020.sa@gmail.com`; that address was already intentionally public in `CODE_OF_CONDUCT.md`.
+Not all final Git metadata uses the noreply address. No Git history or release tag was rewritten.
 
 The delivery transport requires verified TLS, an exact host-and-port allowlist, direct connections
 without inherited proxies, blocked redirects, all-answer DNS validation, SSRF controls, bounded
@@ -116,17 +139,19 @@ The workflow keeps `permissions: contents: read`, uses full-SHA-pinned actions, 
 The full branch-coverage floor is 90%, combined critical-path floor is 95%, and every critical
 module/path must remain at least 90%.
 
-Publication must follow this order:
+Publication followed this audited order:
 
-1. Commit the reviewed Phase 1 and release-preparation diff on
-   `feature/opencti-approved-delivery` with the public noreply identity.
-2. Push normally, open the reviewable pull request, and require all checks.
-3. Squash merge through protected `main`; never push directly or bypass protection.
-4. Verify final `main` CI and rebuild from the exact clean merge commit outside the checkout.
-5. Create annotated tag `v0.2.0b1`, publish a GitHub prerelease, and attach only the verified wheel,
-   source distribution, and `SHA256SUMS.txt`.
-6. Verify anonymous public downloads and checksums, tag/merge history, release metadata, clean
-   local state, and feature-branch cleanup.
+1. The reviewed Phase 1 and release-preparation diff was committed as
+   `c5d9e65b15611639d4d5e1c8a7b6e951df91a2bb` on `feature/opencti-approved-delivery`.
+2. PR #8 passed all required checks and was squash-merged through protected `main` without an
+   admin bypass or force push.
+3. Final `main` CI passed at `cc22d2ea0eabf2eeff041f8b3c2c4b4e61731ac7`; artifacts were rebuilt
+   from that exact clean commit outside the checkout.
+4. Annotated tag `v0.2.0b1` was created without signing and points to the exact release commit.
+5. GitHub prerelease 356229510 was published with only the verified wheel, source distribution,
+   and `SHA256SUMS.txt`.
+6. Anonymous downloads, checksums, tag/merge history, release metadata, clean local state, and
+   remote feature-branch cleanup were verified after publication.
 
 No Dependabot interaction, old-release mutation, PyPI upload, container-registry publication,
 force push, protection bypass, or live OpenCTI contact is authorized.
